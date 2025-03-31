@@ -4,6 +4,7 @@
 #####            Configure MySQL, local.php, copy commands.php, ro-translation            #####
 ###############################################################################################
 
+if false; then # first do nothing
 
 show_info ${ICON_INFO} 'Installing MySQL database template...'
 
@@ -88,3 +89,5 @@ show_info ${ICON_OK} 'Romanian laguage package installed.'
 
 chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
+
+fi

@@ -35,7 +35,7 @@ else
 fi
 echo
 echo '==========================================================================================================================='
-echo 'Updated for Mautic 4 by Ionuţ Ojică - contact@ionutojica.com'
+echo 'Updated for Mautic 5 by Ionuţ Ojică - contact@ionutojica.ro'
 echo
 echo 'Source created by Matthias Reich - Info@Online-Business-Duplicator.de ( https://online-business-duplicator.de/mautic ).'
 echo

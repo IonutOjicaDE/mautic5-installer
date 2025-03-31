@@ -4,6 +4,8 @@
 #####                           Personalize Mautic raw files                              #####
 ###############################################################################################
 
+if false; then # first do nothing
+
 # Script name with extension and absolute path
 path_scriptName_ext=$(readlink -f "$0")
 # The absolute path of the script, terminated with "/"
@@ -25,3 +27,5 @@ perl -s "${path_script}${scriptName}.perl" "${MAUTIC_FOLDER}" "${MAUTIC_SUBDOMAI
 
 php "${MAUTIC_FOLDER}bin/console" cache:clear --no-interaction --no-warmup
 php "${MAUTIC_FOLDER}bin/console" mautic:assets:generate
+
+fi

@@ -10,7 +10,7 @@ show_info ${ICON_INFO} "Create mautic${MAUTIC_COUNT} and user mauticuser${MAUTIC
 #database named "mautic" will be created
 #username "mauticuser" will be created
 #with the password "MYSQL_MAUTICUSER_PASSWORD"
-echo "CREATE DATABASE mautic${MAUTIC_COUNT} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root -p${MYSQL_ROOT_PASSWORD}
+echo "CREATE DATABASE mautic${MAUTIC_COUNT} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root -p${MYSQL_ROOT_PASSWORD}
 
 show_info ${ICON_OK} 'Mautic database created.'
 

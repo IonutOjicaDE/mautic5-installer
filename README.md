@@ -1,5 +1,11 @@
+# WORK IN PROGRESS - script is not functional
+
+# WORK IN PROGRESS - script is not yet functional
+
+# WORK IN PROGRESS - script will be functional
+
 # Presentation
-Installer script for Mautic V4 on VPS with `Debian 12` is a bash script that allows you to install all that is needed for a **fully production ready Mautic 4 instance**. It can be used to install also up to 5x Mautic 4 instances on the same server.
+Installer script for Mautic V5 on VPS with `Debian 12` is a bash script that allows you to install all that is needed for a **fully production ready Mautic 5 instance**. It can be used to install also up to 5x Mautic 5 instances on the same server.
 
 # ✅ What is included
 | INCLUDED | DESCRIPTION |
@@ -10,7 +16,7 @@ Installer script for Mautic V4 on VPS with `Debian 12` is a bash script that all
 | email notifications | In case that the execution of some cron jobs takes too long, notifications will be sent over email. In extreme cases the cron jobs will be stopped. |
 | SSL / https | You can decide to pull a certificate needed for https, or a test certificate, if you want to test the installation beforehand |
 | `php` version | You can choose which `php` version to install |
-| mautic 4 version | You can choose which `mautic 4` version to install (the script is not suitable to install `mautic 5`) |
+| mautic 5 version | You can choose which `mautic 5` version to install (the script is not suitable to install `mautic 6`) |
 | [adminer evo](https://github.com/adminerevo/adminerevo) | Alternative to phpMyAdmin, to access detailed informations directly in the database |
 | [commands.php](https://github.com/IonutOjicaDE/mautic-commands) | Utility that allows you to run different commands without `ssh` |
 | passwords | All needed passwords are automatically created and you receive them over email. Please store the passwords securely (eg. using KeePass) |
@@ -40,16 +46,16 @@ These sources were also very useful:
 * https://stackoverflow.com/questions/16843382/colored-shell-script-output-library
 
 # 🚀 Execution
-1. Create an account on [Hetzner](https://ionutojica.com/hetzner) (or DigitalCloud or AWS or ...) *(If you use my [affiliate link to create a Hetzner account](https://ionutojica.com/hetzner), you receive 20€ to use them for the server and I receive 10€ to pay for my servers)*
+1. Create an account on [Hetzner](https://ionutojica.ro/hetzner) (or DigitalCloud or AWS or ...) *(If you use my [affiliate link to create a Hetzner account](https://ionutojica.ro/hetzner), you receive 20€ to use them for the server and I receive 10€ to pay for my servers)*
 1. Create a VPS that has at minimum 2Gb RAM
-    1. On [Hetzner](https://ionutojica.com/hetzner) you can choose `CX11` as server type
-    1. Do not use Keys, but password authentification for `ssh` (you will receive the password from [Hetzner](https://ionutojica.com/hetzner) per email)
+    1. On [Hetzner](https://ionutojica.ro/hetzner) you can choose `CX11` as server type
+    1. Do not use Keys, but password authentification for `ssh` (you will receive the password from [Hetzner](https://ionutojica.ro/hetzner) per email)
     1. Use `Debian 12` as the Operating System
     1. You can create also a Firewall and let ports 22 (ssh), 80 (http) and 443 (https) for the inside comunication open
 1. Connect trough `ssh` to the server (I use [Termius](https://termius.com/))
 1. Run as the root user:
     ```sh
-    bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic4-installer/main/scripts/mautic-install.sh)
+    bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh)
     ```
 
 * the installer will start to update and upgrade the packages, install some needen packages (like php)
@@ -68,7 +74,7 @@ To send emails using Mautic, you need Postal, Amazon SES, or simply your SMTP, t
 After the installation is finished, you will need to enter the credentials for Postal, Amazon SES or your SMTP. Without these credentials, Mautic will not be able to send emails.
 
 # ⚙️ Configuration file
-The configuration file is `mautic-install.conf` and a template configuration file is downloaded from [github](https://github.com/IonutOjicaDE/mautic4-installer/raw/refs/heads/main/scripts/mautic-install.conf) and will be opened using `nano` text editor (you can find some shortcuts for `nano` below).
+The configuration file is `mautic-install.conf` and a template configuration file is downloaded from [github](https://github.com/IonutOjicaDE/mautic5-installer/raw/refs/heads/main/scripts/mautic-install.conf) and will be opened using `nano` text editor (you can find some shortcuts for `nano` below).
 
 ## GENERAL CONFIGURATION
 | VARIABLE | DESCRIPTION |
@@ -87,8 +93,8 @@ The configuration file is `mautic-install.conf` and a template configuration fil
 | `MAUTIC_COUNT` | Commented line: will install first/main instance, values from `2` to `5`: install x count Mautic instance on the same server |
 | `MYSQL_ROOT_PASSWORD` | if `MAUTIC_COUNT > 1` then we need the password of root user to MySQL database |
 | `ROOT_USER_PASSWORD` | if `MAUTIC_COUNT > 1` then we need the password of root user on the server |
-| `PHP_VERSION` | Mautic 4.4.11 works with php8.0 well, so enter `'8.0'` |
-| `MAUTIC_VERSION` | the last **Mautic 4** version on 17.09.2024 is **4.4.12**, so you could enter `'4.4.12'`. You can check for the last version [here](https://github.com/mautic/mautic/tags). *This installation script is not suitable for Mautic 5!* |
+| `PHP_VERSION` | Mautic 5.2.4 works with php8.1 well, so enter `'8.1'` |
+| `MAUTIC_VERSION` | the last **Mautic 5** version on 31.03.2025 is **5.2.4**, so you could enter `'5.2.4'`. You can check for the last version [here](https://github.com/mautic/mautic/tags). *This installation script is not suitable for Mautic 6!* |
 | `ADMINER_VERSION` | the last **AdminerEvo** version on 17.09.2024 is **4.8.4**, so you could enter `'4.8.4'`. You can check for the last version [here](https://github.com/adminerevo/adminerevo). |
 
 ## NOTIFICATION CONFIGURATION
@@ -101,9 +107,9 @@ The configuration file is `mautic-install.conf` and a template configuration fil
 | `FROM_PASS` | Password for the above username `FROM_USER` on SMTP account `FROM_SERVER_PORT`, eg: `MfE4KrGf%fH7PsW2$` |
 
 # 🖧 VPS
-I use VPS from [Hetzner](https://ionutojica.com/hetzner). `CX11` is more than enough at the begining!
+I use VPS from [Hetzner](https://ionutojica.ro/hetzner). `CX11` is more than enough at the begining!
 
-*(If you use my [affiliate link to create a Hetzner account](https://ionutojica.com/hetzner), you receive 20€ to use them for the server and I receive 10€ to pay for my servers)*
+*(If you use my [affiliate link to create a Hetzner account](https://ionutojica.ro/hetzner), you receive 20€ to use them for the server and I receive 10€ to pay for my servers)*
 
 # 📝 Nano text editor
 For those that are new to this editor, here are some shortcut keys:
@@ -251,8 +257,8 @@ The name of these elements (emails, campaigns, forms, segments) is all in Romani
 Also all the contact fields inside Mautic are renamed in Romanian language.
 
 # 📋 To do
-1. The backup files are located only on the same server as Mautic - this is not good: if the server will be unavailable, the backups will not be accessible anymore. Upload to external cloud is needed, perhaps each 7-th day. [Hetzner](https://ionutojica.com/hetzner) (or DigitalCloud) can make also backups, but these are also on their servers - it is better to have an external backup also.
-1. Include initialization of the VPS on [Hetzner](https://ionutojica.com/hetzner) (or DigitalCloud). Very usefull information is found here: https://github.com/escopecz/docker-compose-mautic
+1. The backup files are located only on the same server as Mautic - this is not good: if the server will be unavailable, the backups will not be accessible anymore. Upload to external cloud is needed, perhaps each 7-th day. [Hetzner](https://ionutojica.ro/hetzner) (or DigitalCloud) can make also backups, but these are also on their servers - it is better to have an external backup also.
+1. Include initialization of the VPS on [Hetzner](https://ionutojica.ro/hetzner) (or DigitalCloud). Very usefull information is found here: https://github.com/escopecz/docker-compose-mautic
 1. Automatically deduplicate contacts with the same email address. Now you receive only an email notification about the contacts found (the search is done over night).
 1. Install only one Adminer. Now each Mautic installation has also an Adminer installed, although one is enough. Adminer is <500kB so this issue is low priority.
 1. Possibility to remove installation 2-5. First installation cannot be uninstalled.

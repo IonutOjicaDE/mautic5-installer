@@ -7,23 +7,23 @@
 ###############################################################################
 
 #clear
-
+# https://patorjk.com/software/taag/#p=display&f=Colossal&t=ionutojica.ro
 echo -e "${Cya}"
-echo 'd8b                            888                    d8b d8b                                                               '
-echo 'Y8P                            888                    Y8P Y8P                                                               '
-echo '                               888                                                                                          '
-echo '888  .d88b.  88888b.  888  888 888888      .d88b.    8888 888  .d8888b  8888b.               .d8888b  .d88b.  88888b.d88b.  '
-echo '888 d88""88b 888 "88b 888  888 888        d88""88b   "888 888 d88P"        "88b             d88P"    d88""88b 888 "888 "88b '
-echo '888 888  888 888  888 888  888 888        888  888    888 888 888      .d888888             888      888  888 888  888  888 '
-echo '888 Y88..88P 888  888 Y88b 888 Y88b.      Y88..88P    888 888 Y88b.    888  888     d8b     Y88b.    Y88..88P 888  888  888 '
-echo '888  "Y88P"  888  888  "Y88888  "Y888      "Y88P"     888 888  "Y8888P "Y888888     Y8P      "Y8888P  "Y88P"  888  888  888 '
-echo '                                                      888                                                                   '
-echo '                                                     d88P                                                                   '
-echo '                                                   888P"                                                                    '
+echo 'd8b                            888             d8b d8b                                       '
+echo 'Y8P                            888             Y8P Y8P                                       '
+echo '                               888                                                           '
+echo '888  .d88b.  88888b.  888  888 888888 .d88b.  8888 888  .d8888b  8888b.      888d888 .d88b.  '
+echo '888 d88""88b 888 "88b 888  888 888   d88""88b "888 888 d88P"        "88b     888P"  d88""88b '
+echo '888 888  888 888  888 888  888 888   888  888  888 888 888      .d888888     888    888  888 '
+echo '888 Y88..88P 888  888 Y88b 888 Y88b. Y88..88P  888 888 Y88b.    888  888 d8b 888    Y88..88P '
+echo '888  "Y88P"  888  888  "Y88888  "Y888 "Y88P"   888 888  "Y8888P "Y888888 Y8P 888     "Y88P"  '
+echo '                                               888                                           '
+echo '                                              d88P                                           '
+echo '                                            888P"                                            '
 echo -e "${RCol}"
 echo 'GREAT that you install Mautic using this script!'
 echo
-echo 'Updated for Mautic V4 on Debian V12 by Ionuţ Ojică - contact@ionutojica.com'
+echo 'Updated for Mautic V5 on Debian V12 by Ionuţ Ojică - contact@ionutojica.ro'
 echo
 echo 'Source created by Matthias Reich - Info@Online-Business-Duplicator.de ( https://online-business-duplicator.de/mautic ).'
 echo

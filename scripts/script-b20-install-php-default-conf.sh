@@ -11,7 +11,7 @@ if [ -z "${MAUTIC_COUNT}" ]; then
   DEBIAN_FRONTEND=noninteractive apt-get -yq install mc >/dev/null
 
   show_info ${ICON_INFO} 'Install php...'
-  DEBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,xmlrpc,bcmath} >/dev/null
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,bcmath} >/dev/null
 
   #Enable autostart of php on every reboot
   systemctl start php${PHP_VERSION}-fpm >/dev/null

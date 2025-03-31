@@ -5,17 +5,17 @@
 ###############################################################################################
 
 if [ -z "${MYSQL_ROOT_PASSWORD}" ]; then
-      MYSQL_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_' | head -c40)
+      MYSQL_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
 fi
 if [ -z "${ROOT_USER_PASSWORD}" ]; then
-       ROOT_USER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_' | head -c40)
+       ROOT_USER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
 fi
-MYSQL_MAUTICUSER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_' | head -c40)
+MYSQL_MAUTICUSER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
         MAUTIC_SECRET_KEY=$(cat /dev/urandom | tr -dc '1234567890abcdef' | head -c64)
     MAUTIC_REMEMBERME_KEY=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyz' | head -c40)
-    MAUTIC_ADMIN_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_' | head -c40)
+    MAUTIC_ADMIN_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
 
- MAUTIC_COMMANDS_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_' | head -c40)
+ MAUTIC_COMMANDS_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
               MAIN_DOMAIN=$(echo "$MAUTIC_SUBDOMAIN" | cut -d'.' -f2-)
           MAUTIC_USERNAME=$(echo "$MAUTIC_SUBDOMAIN" | sed 's/\.//g')
 

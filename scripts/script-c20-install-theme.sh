@@ -4,6 +4,7 @@
 #####                              Install Theme and icons                                #####
 ###############################################################################################
 
+if false; then # first do nothing
 
 show_info ${ICON_INFO} 'Installing Dashboard...'
 DASHBOARD_FILE="${INSTALL_FOLDER}other/dashboard-20231009.json"
@@ -30,3 +31,5 @@ show_info ${ICON_OK} 'Icons installed.'
 
 chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
+
+fi

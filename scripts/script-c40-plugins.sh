@@ -13,6 +13,8 @@ sed -i "s|/var/mautic-crons/|${CRON_FOLDER}|g" "${MAUTIC_FOLDER}commands/command
 show_info ${ICON_OK} 'commands.php is installed.'
 
 
+if false; then # first do nothing
+
 show_info ${ICON_INFO} 'Installing Plugin: MauticAdvancedTemplatesBundle...'
 wget -q 'https://github.com/IonutOjicaDE/MauticAdvancedTemplatesBundle/archive/refs/heads/master.zip' -O "${INSTALL_FOLDER}MauticAdvancedTemplatesBundle.zip"
 unzip -q "${INSTALL_FOLDER}MauticAdvancedTemplatesBundle.zip" -d "${INSTALL_FOLDER}"
@@ -47,3 +49,5 @@ chmod -R 755 "${MAUTIC_FOLDER}"
 show_info ${ICON_INFO} 'Reload plugins in Mautic...'
 php "${MAUTIC_FOLDER}bin/console" mautic:plugins:reload
 show_info ${ICON_OK} 'Plugins reloaded in Mautic.'
+
+fi

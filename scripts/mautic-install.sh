@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################################
-#####                                INSTALL MAUTIC 4 SCRIPT                              #####
+#####                                INSTALL MAUTIC 5 SCRIPT                              #####
 #####                                    BY IONUT OJICA                                   #####
 #####                                    IONUTOJICA.COM                                   #####
 ###############################################################################################
@@ -96,9 +96,9 @@ show_info ${ICON_OK} 'Definitions loaded !'
 #####                                  GET SCRIPT FILES                                   #####
 ###############################################################################################
 
-URL_TO_ARCHIVE='https://github.com/IonutOjicaDE/mautic4-installer/archive/refs/heads/main.zip'
+URL_TO_ARCHIVE='https://github.com/IonutOjicaDE/mautic5-installer/archive/refs/heads/main.zip'
 PWD="$(pwd)/"
-INSTALL_FOLDER="${PWD}mautic4-installer-main/"
+INSTALL_FOLDER="${PWD}mautic5-installer-main/"
 FILE_CONF="${INSTALL_FOLDER}scripts/mautic-install.conf"
 
 show_info ${ICON_INFO} 'Update of the packages...'
@@ -114,8 +114,8 @@ DEBIAN_FRONTEND=noninteractive apt-get -yq install unzip >/dev/null
 show_info ${ICON_OK} 'Unzip installed.'
 
 
-if [[ -e "${PWD}mautic4-installer.zip" ]]; then
-  rm "${PWD}mautic4-installer.zip"
+if [[ -e "${PWD}mautic5-installer.zip" ]]; then
+  rm "${PWD}mautic5-installer.zip"
   show_info ${ICON_INFO} 'Old scripts archive removed...'
 fi
 if [[ -d "${INSTALL_FOLDER}" ]]; then
@@ -124,14 +124,14 @@ if [[ -d "${INSTALL_FOLDER}" ]]; then
 fi
 
 show_info ${ICON_INFO} 'Downloading scripts and utilities needed for installation...'
-wget -q "${URL_TO_ARCHIVE}" -O "${PWD}mautic4-installer.zip"
-if [[ ! -e "${PWD}mautic4-installer.zip" ]]; then
+wget -q "${URL_TO_ARCHIVE}" -O "${PWD}mautic5-installer.zip"
+if [[ ! -e "${PWD}mautic5-installer.zip" ]]; then
   show_info ${ICON_ERR} 'ERROR: archive with scripts could not be loaded!'
   show_info ${ICON_ERR} "Archive to download: ${URL_TO_ARCHIVE}"
   show_info ${ICON_NOGO} 'Terminating installation!'
   exit 1
 fi
-unzip -q "${PWD}mautic4-installer.zip" -d "${PWD}"
+unzip -q "${PWD}mautic5-installer.zip" -d "${PWD}"
 if [[ ! -d "${INSTALL_FOLDER}" ]]; then
   show_info ${ICON_ERR} 'ERROR: downloaded archive with scripts not compatible with this install script!'
   show_info ${ICON_ERR} "Archive to download: ${URL_TO_ARCHIVE}"
@@ -139,7 +139,7 @@ if [[ ! -d "${INSTALL_FOLDER}" ]]; then
   show_info ${ICON_NOGO} 'Terminating installation!'
   exit 1
 fi
-rm "${PWD}mautic4-installer.zip"
+rm "${PWD}mautic5-installer.zip"
 
 
 ###############################################################################################
