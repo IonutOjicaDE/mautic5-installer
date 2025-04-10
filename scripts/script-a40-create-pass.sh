@@ -20,8 +20,9 @@ MYSQL_MAUTICUSER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmno
           MAUTIC_USERNAME=$(echo "$MAUTIC_SUBDOMAIN" | sed 's/\.//g')
 
             MAUTIC_FOLDER="/var/www/mautic${MAUTIC_COUNT}/"
-              CRON_FOLDER="/var/mautic${MAUTIC_COUNT}-crons/"
-      BACKUP_FILES_FOLDER="/var/mautic${MAUTIC_COUNT}-backups/"
+           DOCROOT_FOLDER="${MAUTIC_FOLDER}/docroot/"
+              CRON_FOLDER="${MAUTIC_FOLDER}/crons/"
+      BACKUP_FILES_FOLDER="${MAUTIC_FOLDER}/backups/"
         ROOT_FILES_FOLDER="/usr/local/bin/"
 
 show_info ${ICON_OK} 'Passwords created. Saving the passwords in .sh, .php, .txt files...'
@@ -38,6 +39,7 @@ SENDER_FIRSTNAME='${SENDER_FIRSTNAME}'
 SENDER_LASTNAME='${SENDER_LASTNAME}'
 
 MAUTIC_FOLDER='${MAUTIC_FOLDER}'
+DOCROOT_FOLDER='${DOCROOT_FOLDER}'
 CRON_FOLDER='${CRON_FOLDER}'
 BACKUP_FILES_FOLDER='${BACKUP_FILES_FOLDER}'
 ROOT_FILES_FOLDER='${ROOT_FILES_FOLDER}'
