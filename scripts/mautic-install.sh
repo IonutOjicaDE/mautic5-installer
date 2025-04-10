@@ -7,7 +7,7 @@
 ###############################################################################################
 
 
-#Run with: bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic4-installer/main/scripts/mautic-install.sh)
+#Run with: bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh)
 # ✅ ❌ ❓ ❗ ❎ ⛔ 🛈 ℹ️ 📝
 
 ###############################################################################################
