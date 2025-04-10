@@ -8,7 +8,7 @@ show_info ${ICON_INFO} 'Download Mautic...'
 
 mkdir -p "${MAUTIC_FOLDER}"
 
-composer create-project mautic/recommended-project:"^${MAJOR_VERSION}" "$MAUTIC_FOLDER"
+COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_PROCESS_TIMEOUT=10000 composer create-project mautic/recommended-project:"${MAUTIC_VERSION}" "$MAUTIC_FOLDER" --no-interaction
 
 # DEBIAN_FRONTEND=noninteractive apt-get -yq install unzip zip >/dev/null
 # wget -q "${MAUTIC_DOWNLOAD_URL}" -P "${INSTALL_FOLDER}"
