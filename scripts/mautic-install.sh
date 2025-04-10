@@ -3,7 +3,7 @@
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
 #####                                    BY IONUT OJICA                                   #####
-#####                                    IONUTOJICA.COM                                   #####
+#####                                    IONUTOJICA.RO                                   #####
 ###############################################################################################
 
 
@@ -98,7 +98,7 @@ show_info ${ICON_OK} 'Definitions loaded !'
 
 URL_TO_ARCHIVE='https://github.com/IonutOjicaDE/mautic5-installer/archive/refs/heads/main.zip'
 PWD="$(pwd)/"
-INSTALL_FOLDER="${PWD}mautic5-installer-main/"
+INSTALL_FOLDER="${PWD}mautic-installer-main/"
 FILE_CONF="${INSTALL_FOLDER}scripts/mautic-install.conf"
 
 show_info ${ICON_INFO} 'Update of the packages...'
@@ -106,16 +106,14 @@ DEBIAN_FRONTEND=noninteractive apt-get -yq update >/dev/null
 show_info ${ICON_INFO} 'Upgrade of the packages...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq upgrade >/dev/null
 show_info ${ICON_OK} 'Update and upgrade finished.'
-#DEBIAN_FRONTEND=noninteractive apt-get -yq autoremove
-#DEBIAN_FRONTEND=noninteractive apt-get -yq clean
 
 show_info ${ICON_INFO} 'Installing unzip...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq install unzip >/dev/null
 show_info ${ICON_OK} 'Unzip installed.'
 
 
-if [[ -e "${PWD}mautic5-installer.zip" ]]; then
-  rm "${PWD}mautic5-installer.zip"
+if [[ -e "${PWD}mautic-installer.zip" ]]; then
+  rm "${PWD}mautic-installer.zip"
   show_info ${ICON_INFO} 'Old scripts archive removed...'
 fi
 if [[ -d "${INSTALL_FOLDER}" ]]; then
@@ -124,14 +122,14 @@ if [[ -d "${INSTALL_FOLDER}" ]]; then
 fi
 
 show_info ${ICON_INFO} 'Downloading scripts and utilities needed for installation...'
-wget -q "${URL_TO_ARCHIVE}" -O "${PWD}mautic5-installer.zip"
-if [[ ! -e "${PWD}mautic5-installer.zip" ]]; then
+wget -q "${URL_TO_ARCHIVE}" -O "${PWD}mautic-installer.zip"
+if [[ ! -e "${PWD}mautic-installer.zip" ]]; then
   show_info ${ICON_ERR} 'ERROR: archive with scripts could not be loaded!'
   show_info ${ICON_ERR} "Archive to download: ${URL_TO_ARCHIVE}"
   show_info ${ICON_NOGO} 'Terminating installation!'
   exit 1
 fi
-unzip -q "${PWD}mautic5-installer.zip" -d "${PWD}"
+unzip -q "${PWD}mautic-installer.zip" -d "${PWD}"
 if [[ ! -d "${INSTALL_FOLDER}" ]]; then
   show_info ${ICON_ERR} 'ERROR: downloaded archive with scripts not compatible with this install script!'
   show_info ${ICON_ERR} "Archive to download: ${URL_TO_ARCHIVE}"
@@ -139,7 +137,7 @@ if [[ ! -d "${INSTALL_FOLDER}" ]]; then
   show_info ${ICON_NOGO} 'Terminating installation!'
   exit 1
 fi
-rm "${PWD}mautic5-installer.zip"
+rm "${PWD}mautic-installer.zip"
 
 
 ###############################################################################################
@@ -164,7 +162,8 @@ install_script_files=(
   'script-e10-ufw-fail2ban.sh'
   'script-e20-crons.sh'
   'script-e30-send-pass-to-email.sh'
-  'script-e40-summary.sh'
+  'script-e40-clean.sh'
+  'script-f10-summary.sh'
 )
 
 for install_script_file in "${install_script_files[@]}"; do
