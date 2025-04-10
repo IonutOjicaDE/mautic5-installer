@@ -9,7 +9,6 @@ if dpkg -l | grep -qw apache2; then
   show_info ${ICON_IMP} 'Apache2 is installed. Uninstalling...'
   systemctl stop apache2
   DEBIAN_FRONTEND=noninteractive apt-get -yq purge apache2 apache2-utils apache2-bin apache2.2-common >/dev/null
-  DEBIAN_FRONTEND=noninteractive apt-get -yq autoremove >/dev/null
   show_info ${ICON_OK} 'Apache2 succesfully uninstalled.'
 else
   show_info ${ICON_OK} 'Apache2 is not installed.'
