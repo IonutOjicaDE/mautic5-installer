@@ -61,7 +61,7 @@ show_info ${ICON_OK} 'Cron for root user scheduled.'
 
 
 show_info ${ICON_INFO} 'Clearing cache...'
-php "${CRON_FOLDER}cron-clear-cache.php"
+runuser -u www-data -- php "${CRON_FOLDER}cron-clear-cache.php"
 
 chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
