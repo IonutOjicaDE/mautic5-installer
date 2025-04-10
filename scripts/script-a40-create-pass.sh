@@ -5,24 +5,24 @@
 ###############################################################################################
 
 if [ -z "${MYSQL_ROOT_PASSWORD}" ]; then
-      MYSQL_ROOT_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
+      MYSQL_ROOT_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*[](){};:,.-' < /dev/urandom | head -c40)
 fi
 if [ -z "${ROOT_USER_PASSWORD}" ]; then
-       ROOT_USER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
+       ROOT_USER_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*[](){};:,.-' < /dev/urandom | head -c40)
 fi
-MYSQL_MAUTICUSER_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
-        MAUTIC_SECRET_KEY=$(cat /dev/urandom | tr -dc '1234567890abcdef' | head -c64)
-    MAUTIC_REMEMBERME_KEY=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyz' | head -c40)
-    MAUTIC_ADMIN_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
+MYSQL_MAUTICUSER_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*[](){};:,.-' < /dev/urandom | head -c40)
+        MAUTIC_SECRET_KEY=$(tr -dc 'a-f0-9' < /dev/urandom | head -c64)
+    MAUTIC_REMEMBERME_KEY=$(tr -dc 'A-Za-z0-9' < /dev/urandom | head -c40)
+    MAUTIC_ADMIN_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*[](){};:,.-' < /dev/urandom | head -c40)
 
- MAUTIC_COMMANDS_PASSWORD=$(cat /dev/urandom | tr -dc '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_#=+-*[](){};:,.' | head -c40)
+ MAUTIC_COMMANDS_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*[](){};:,.-' < /dev/urandom | head -c40)
               MAIN_DOMAIN=$(echo "$MAUTIC_SUBDOMAIN" | cut -d'.' -f2-)
           MAUTIC_USERNAME=$(echo "$MAUTIC_SUBDOMAIN" | sed 's/\.//g')
 
             MAUTIC_FOLDER="/var/www/mautic${MAUTIC_COUNT}/"
-           DOCROOT_FOLDER="${MAUTIC_FOLDER}/docroot/"
-              CRON_FOLDER="${MAUTIC_FOLDER}/crons/"
-      BACKUP_FILES_FOLDER="${MAUTIC_FOLDER}/backups/"
+           DOCROOT_FOLDER="${MAUTIC_FOLDER}docroot/"
+              CRON_FOLDER="${MAUTIC_FOLDER}crons/"
+      BACKUP_FILES_FOLDER="${MAUTIC_FOLDER}backups/"
         ROOT_FILES_FOLDER="/usr/local/bin/"
 
 show_info ${ICON_OK} 'Passwords created. Saving the passwords in .sh, .php, .txt files...'
