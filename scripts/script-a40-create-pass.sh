@@ -28,8 +28,8 @@ MYSQL_MAUTICUSER_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*[](){};:,.-' < /dev/urandom | 
 show_info ${ICON_OK} 'Passwords created. Saving the passwords in .sh, .php, .txt files...'
 
 
-mkdir "${CRON_FOLDER}"
-mkdir "${BACKUP_FILES_FOLDER}"
+mkdir -p "${CRON_FOLDER}"
+mkdir -p "${BACKUP_FILES_FOLDER}"
 
 content_file_sh="
 MAIN_DOMAIN='${MAIN_DOMAIN}'
