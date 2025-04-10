@@ -25,7 +25,7 @@ fi
 
 perl -s "${path_script}${scriptName}.perl" "${MAUTIC_FOLDER}" "${MAUTIC_SUBDOMAIN}"
 
-php "${MAUTIC_FOLDER}bin/console" cache:clear --no-interaction --no-warmup
-php "${MAUTIC_FOLDER}bin/console" mautic:assets:generate
+runuser -u www-data -- php "${MAUTIC_FOLDER}bin/console" cache:clear --no-interaction --no-warmup
+runuser -u www-data -- php "${MAUTIC_FOLDER}bin/console" mautic:assets:generate
 
 fi
