@@ -110,6 +110,13 @@ EOF
 
   show_info ${ICON_OK} 'Composer installed.'
 
+
+  show_info ${ICON_INFO} 'Install git...'
+
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install git >/dev/null
+
+  show_info ${ICON_OK} 'git installed.'
+
 else
   show_info ${ICON_INFO} 'No install or configuration of php or configuration of Nginx'
 fi
