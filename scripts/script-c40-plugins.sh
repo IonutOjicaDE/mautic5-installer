@@ -41,13 +41,13 @@ chown -R www-data:www-data "${MAUTIC_FOLDER}plugins/"
 chmod -R 755 "${MAUTIC_FOLDER}plugins/"
 
 show_info ${ICON_INFO} 'Clearing cache...'
-php "${MAUTIC_FOLDER}bin/console" cache:clear --no-interaction --no-warmup
+runuser -u www-data -- php "${MAUTIC_FOLDER}bin/console" cache:clear --no-interaction --no-warmup
 
 chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
 
 show_info ${ICON_INFO} 'Reload plugins in Mautic...'
-php "${MAUTIC_FOLDER}bin/console" mautic:plugins:reload
+runuser -u www-data -- php "${MAUTIC_FOLDER}bin/console" mautic:plugins:reload
 show_info ${ICON_OK} 'Plugins reloaded in Mautic.'
 
 fi
