@@ -163,6 +163,7 @@ install_script_files=(
   'script-e20-crons.sh'
   'script-e30-send-pass-to-email.sh'
   'script-e40-clean.sh'
+  'script-e50-initialize-mautic.sh'
   'script-f10-summary.sh'
 )
 
