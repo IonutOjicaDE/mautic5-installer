@@ -94,6 +94,22 @@ EOF
 
   show_info ${ICON_OK} 'Configuration of web server Nginx and php finished.'
 
+
+  show_info ${ICON_INFO} 'Install nodejs and npn...'
+
+  curl -fsSL <https://deb.nodesource.com/setup_20.x> | sudo -E bash - >/dev/null
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install nodejs >/dev/null
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install npm >/dev/null
+
+  show_info ${ICON_OK} 'nodejs and npn installed.'
+
+
+  show_info ${ICON_INFO} 'Install composer...'
+
+  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer >/dev/null
+
+  show_info ${ICON_OK} 'Composer installed.'
+
 else
   show_info ${ICON_INFO} 'No install or configuration of php or configuration of Nginx'
 fi
