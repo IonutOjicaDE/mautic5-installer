@@ -22,7 +22,7 @@ server {
 
   server_name ${MAUTIC_SUBDOMAIN};
 
-  root ${MAUTIC_FOLDER};
+  root ${DOCROOT_FOLDER};
   error_log /var/log/nginx/mautic${MAUTIC_COUNT}.error;
   access_log /var/log/nginx/mautic${MAUTIC_COUNT}.access;
   client_max_body_size 512M;
@@ -149,15 +149,15 @@ mautic_conf_file="/etc/nginx/conf.d/mautic${MAUTIC_COUNT}.conf"
 echo "${file_content}" > "${mautic_conf_file}"
 systemctl reload nginx
 
-show_info ${ICON_OK} 'Nginx configuration file for Mautic (mautic.conf) created.'
+show_info ${ICON_OK} "Nginx configuration file for Mautic (mautic${MAUTIC_COUNT}.conf) created."
 
 
 if [ "${SSL_CERTIFICATE,,}" == "test" ] || [ "${SSL_CERTIFICATE,,}" == "yes" ]; then
   show_info ${ICON_INFO} 'We will try to obtain a SSL certificate...'
 
   DEBIAN_FRONTEND=noninteractive apt-get -yq install certbot python3-certbot-nginx >/dev/null
-  mkdir -p "${MAUTIC_FOLDER}.well-known/acme-challenge"
-  chown www-data:www-data "${MAUTIC_FOLDER}.well-known/acme-challenge"
+  mkdir -p "${DOCROOT_FOLDER}.well-known/acme-challenge"
+  chown www-data:www-data "${DOCROOT_FOLDER}.well-known/acme-challenge"
   #To pull the certificate during debuging: --test-cert
   #To test if a certificate can be pulled: --dry-run
   #https://letsencrypt.org/docs/staging-environment/
