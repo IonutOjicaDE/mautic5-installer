@@ -98,7 +98,7 @@ show_info ${ICON_OK} 'Definitions loaded !'
 
 URL_TO_ARCHIVE='https://github.com/IonutOjicaDE/mautic5-installer/archive/refs/heads/main.zip'
 PWD="$(pwd)/"
-INSTALL_FOLDER="${PWD}mautic-installer-main/"
+INSTALL_FOLDER="${PWD}mautic5-installer-main/"
 FILE_CONF="${INSTALL_FOLDER}scripts/mautic-install.conf"
 
 show_info ${ICON_INFO} 'Update of the packages...'
