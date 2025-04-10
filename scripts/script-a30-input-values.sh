@@ -23,7 +23,7 @@ echo '                                            888P"                         
 echo -e "${RCol}"
 echo 'GREAT that you install Mautic using this script!'
 echo
-echo 'Updated for Mautic V5 on Debian V12 by Ionuţ Ojică - contact@ionutojica.ro'
+echo 'Updated for Mautic V5 on Debian V12 by Ionuţ Ojică - https://ionutojica.ro/home/contact/'
 echo
 echo 'Source created by Matthias Reich - Info@Online-Business-Duplicator.de ( https://online-business-duplicator.de/mautic ).'
 echo
