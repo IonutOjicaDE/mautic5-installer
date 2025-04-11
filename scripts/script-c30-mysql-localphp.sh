@@ -4,31 +4,6 @@
 #####            Configure MySQL, local.php, copy commands.php, ro-translation            #####
 ###############################################################################################
 
-if [ -z "$MAUTIC_COUNT" ]; then
-  show_info ${ICON_INFO} 'Change authentification to MySQL of root user from localhost to mysql_native_password...'
-  #Schimbă parola utilizatorului root
-  echo "ALTER USER 'root'@'localhost' IDENTIFIED VIA 'mysql_native_password';ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root
-else
-  # Check current authentication method for root user
-  auth_plugin=$(echo "SELECT plugin FROM mysql.user WHERE User = 'root' AND Host = 'localhost';" | mysql -u root -p${MYSQL_ROOT_PASSWORD} -N)
-  if [ "$auth_plugin" == "mysql_native_password" ]; then
-      show_info ${ICON_OK} 'Authentication method to MySQL of root user is mysql_native_password'
-  else
-      show_info ${ICON_ERR} "Error: Authentication should be mysql_native_password, is ${auth_plugin}."
-      show_info ${ICON_ERR} "Should the installation continue?"
-      answer_yes_else_stop && continue
-  fi
-fi
-
-show_info ${ICON_INFO} 'Create mautic database and user...'
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
-CREATE DATABASE mautic${MAUTIC_COUNT} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'mautic${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}';
-GRANT ALL PRIVILEGES ON mautic${MAUTIC_COUNT}.* TO 'mautic${MAUTIC_COUNT}'@'localhost';
-FLUSH PRIVILEGES;
-EOF
-show_info ${ICON_OK} 'Mautic database and user are created.'
-
 
 if false; then # first do nothing
 

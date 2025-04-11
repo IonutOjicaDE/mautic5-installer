@@ -12,7 +12,7 @@ mkdir -p "${BACKUP_FILES_FOLDER}"
 
 mv "${INSTALL_FOLDER}crons/"* "${CRON_FOLDER}"
 mv "${TEMP_FOLDER}"* "${CRON_FOLDER}"
-rm "${TEMP_FOLDER}"
+rm -d "${TEMP_FOLDER}"
 
 chown -R www-data:www-data "${CRON_FOLDER}"
 chown -R www-data:www-data "${BACKUP_FILES_FOLDER}"
