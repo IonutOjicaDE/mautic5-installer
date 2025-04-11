@@ -4,7 +4,7 @@
 #####                        Clear temporary and not needed files                         #####
 ###############################################################################################
 
-composer remove mautic/core-project-message
+COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_PROCESS_TIMEOUT=10000 composer --working-dir="${MAUTIC_FOLDER}" remove mautic/core-project-message --no-interaction
 
 show_info ${ICON_INFO} 'Autoremove of not needed packages...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq autoremove >/dev/null
