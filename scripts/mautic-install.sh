@@ -157,6 +157,7 @@ install_script_files=(
   'script-b10-update-nginx-mariadb.sh'
   'script-b20-install-php-default-conf.sh'
   'script-b30-install-mautic.sh'
+  'script-b35-initialize-mautic.sh'
   'script-b40-install-adminer.sh'
   'script-c10-database-certbot.sh'
   'script-c20-install-theme.sh'
@@ -168,7 +169,6 @@ install_script_files=(
   'script-e20-crons.sh'
   'script-e30-send-pass-to-email.sh'
   'script-e40-clean.sh'
-  'script-e50-initialize-mautic.sh'
   'script-f10-summary.sh'
 )
 
