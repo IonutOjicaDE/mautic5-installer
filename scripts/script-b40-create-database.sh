@@ -4,21 +4,6 @@
 #####                                    Create database                                  #####
 ###############################################################################################
 
-
-show_info ${ICON_INFO} "Create database mautic${MAUTIC_COUNT} and user mauticuser${MAUTIC_COUNT}..."
-
-#database named "mautic" will be created
-#username "mauticuser" will be created
-#with the password "MYSQL_MAUTICUSER_PASSWORD"
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
-CREATE DATABASE mautic${MAUTIC_COUNT} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}'
-FLUSH PRIVILEGES;
-EOF
-
-show_info ${ICON_OK} 'Mautic database created.'
-
-
 if [ -z "$MAUTIC_COUNT" ]; then
   show_info ${ICON_INFO} 'Change authentification to MySQL of root user from localhost to mysql_native_password...'
   #Schimbă parola utilizatorului root
@@ -34,3 +19,16 @@ else
       answer_yes_else_stop && continue
   fi
 fi
+
+show_info ${ICON_INFO} "Create database mautic${MAUTIC_COUNT} and user mauticuser${MAUTIC_COUNT}..."
+
+#database named "mautic" will be created
+#username "mauticuser" will be created
+#with the password "MYSQL_MAUTICUSER_PASSWORD"
+mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
+CREATE DATABASE mautic${MAUTIC_COUNT} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}';
+FLUSH PRIVILEGES;
+EOF
+
+show_info ${ICON_OK} 'Mautic database and user created.'
