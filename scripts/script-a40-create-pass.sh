@@ -71,29 +71,20 @@ show_info ${ICON_OK} 'Passwords saved in .sh file.'
 
 
 content_file_php=""
-while IFS= read -r current_line; do
-  if [[ "${current_line}" == *=* ]]; then
-    temp="${current_line%=*}"
-    content_file_php+="$""$temp='${!temp}';"$'\n'
-  else
-    content_file_php+="${current_line}"$'\n'
-  fi
-done <<< "${content_file_sh}"
-
-show_info ${ICON_OK} 'Passwords saved in .php file.'
-
-
-printf "<?php\n%s\n?>" "${content_file_php}" > "${CRON_FOLDER}mautic.php"
-
 content_file_txt=""
 while IFS= read -r current_line; do
   if [[ "${current_line}" == *=* ]]; then
-    content_file_txt+=$(echo "${current_line}" | sed "s/=/ = /g; s/'//g")$'\n'
+    key="${current_line%%=*}"
+    value="${!key}"
+    content_file_php+="$${key}='${value}';"$'\n'
+    content_file_txt+="${key} = ${value}"$'\n'
   else
+    content_file_php+="${current_line}"$'\n'
     content_file_txt+="${current_line}"$'\n'
   fi
 done <<< "${content_file_sh}"
 
+printf "<?php\n%s\n?>" "${content_file_php}" > "${CRON_FOLDER}mautic.php"
 printf "${content_file_txt}" > "${CRON_FOLDER}mautic.txt"
 
-show_info ${ICON_OK} 'Passwords saved in .txt file.'
+show_info ${ICON_OK} 'Passwords saved in .php and .txt files.'
