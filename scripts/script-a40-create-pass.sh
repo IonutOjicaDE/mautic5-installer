@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################################
-#####                        Creating passwords and saving the file                       #####
+#####                        Creating passwords and saving the files                      #####
 ###############################################################################################
 
 if [ -z "${MYSQL_ROOT_PASSWORD}" ]; then
@@ -26,10 +26,6 @@ MYSQL_MAUTICUSER_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*;:,.-' < /dev/urandom | head -
         ROOT_FILES_FOLDER="/usr/local/bin/"
 
 show_info ${ICON_OK} 'Passwords created. Saving the passwords in .sh, .php, .txt files...'
-
-
-mkdir -p "${CRON_FOLDER}"
-mkdir -p "${BACKUP_FILES_FOLDER}"
 
 content_file_sh="
 MAIN_DOMAIN='${MAIN_DOMAIN}'
@@ -65,7 +61,7 @@ FROM_SERVER_PORT='${FROM_SERVER_PORT}'
 FROM_USER='${FROM_USER}'
 FROM_PASS='${FROM_PASS}'
 "
-printf "#!/bin/bash\n%s\n" "${content_file_sh}" > "${CRON_FOLDER}mautic.sh"
+printf "#!/bin/bash\n%s\n" "${content_file_sh}" > "${TEMP_FOLDER}mautic.sh"
 
 show_info ${ICON_OK} 'Passwords saved in .sh file.'
 
@@ -76,7 +72,7 @@ while IFS= read -r current_line; do
   if [[ "${current_line}" == *=* ]]; then
     key="${current_line%%=*}"
     value="${!key}"
-    content_file_php+="$${key}='${value}';"$'\n'
+    content_file_php+="\$${key}='${value}';"$'\n'
     content_file_txt+="${key} = ${value}"$'\n'
   else
     content_file_php+="${current_line}"$'\n'
@@ -84,7 +80,7 @@ while IFS= read -r current_line; do
   fi
 done <<< "${content_file_sh}"
 
-printf "<?php\n%s\n?>" "${content_file_php}" > "${CRON_FOLDER}mautic.php"
-printf "${content_file_txt}" > "${CRON_FOLDER}mautic.txt"
+printf "<?php\n%s\n?>" "${content_file_php}" > "${TEMP_FOLDER}mautic.php"
+printf "${content_file_txt}" > "${TEMP_FOLDER}mautic.txt"
 
 show_info ${ICON_OK} 'Passwords saved in .php and .txt files.'
