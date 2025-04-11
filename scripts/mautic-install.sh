@@ -6,8 +6,11 @@
 #####                                    IONUTOJICA.RO                                   #####
 ###############################################################################################
 
+# Connect to the VPS using command (as an example):
+# ssh root@m.ionutojica.ro
+# ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@m.ionutojica.ro
 
-#Run with: bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh)
+# Run with: bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh)
 # ✅ ❌ ❓ ❗ ❎ ⛔ 🛈 ℹ️ 📝
 
 ###############################################################################################
@@ -100,6 +103,8 @@ URL_TO_ARCHIVE='https://github.com/IonutOjicaDE/mautic5-installer/archive/refs/h
 PWD="$(pwd)/"
 INSTALL_FOLDER="${PWD}mautic5-installer-main/"
 FILE_CONF="${INSTALL_FOLDER}scripts/mautic-install.conf"
+TEMP_FOLDER="${PWD}temp/"
+mkdir -p "${TEMP_FOLDER}"
 
 show_info ${ICON_INFO} 'Update of the packages...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq update >/dev/null
