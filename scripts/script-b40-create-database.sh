@@ -16,7 +16,7 @@ else
   else
       show_info ${ICON_ERR} "Error: Authentication should be mysql_native_password, is ${auth_plugin}."
       show_info ${ICON_ERR} "Should the installation continue?"
-      answer_yes_else_stop && continue
+      answer_yes_else_stop
   fi
 fi
 
@@ -30,5 +30,19 @@ CREATE DATABASE mautic${MAUTIC_COUNT} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8
 GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}';
 FLUSH PRIVILEGES;
 EOF
+
+DB_EXISTS=$(mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -sse "SHOW DATABASES LIKE 'mautic${MAUTIC_COUNT}';")
+if [[ "$DB_EXISTS" != "mautic${MAUTIC_COUNT}" ]]; then
+  show_info ${ICON_ERR} "Error: Database 'mautic${MAUTIC_COUNT}' does not exist."
+  show_info ${ICON_ERR} "Should the installation continue?"
+  answer_yes_else_stop
+fi
+
+USER_EXISTS=$(mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -sse "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'mauticuser${MAUTIC_COUNT}' AND host = 'localhost');")
+if [[ "$USER_EXISTS" != 1 ]]; then
+  show_info ${ICON_ERR} "Error: User 'mauticuser${MAUTIC_COUNT}' does not exist."
+  show_info ${ICON_ERR} "Should the installation continue?"
+  answer_yes_else_stop
+fi
 
 show_info ${ICON_OK} 'Mautic database and user created.'

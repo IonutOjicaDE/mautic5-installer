@@ -21,6 +21,12 @@ runuser -u www-data -- bash -c "cd '${MAUTIC_FOLDER}' && php bin/console mautic:
 --admin_lastname=${SENDER_LASTNAME} \
 https://${MAUTIC_SUBDOMAIN}"
 
+if [[ $? -ne 0 ]]; then
+  show_info ${ICON_ERR} "Error: Initialization of Mautic${MAUTIC_COUNT} failed."
+  show_info ${ICON_ERR} "Should the installation continue?"
+  answer_yes_else_stop
+fi
+
 chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
 

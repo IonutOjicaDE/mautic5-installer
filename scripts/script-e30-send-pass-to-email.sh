@@ -41,5 +41,5 @@ if [ $? -eq 0 ]; then
 else
   EMAIL_SENT=false
   show_info ${ICON_ERR} "ERROR: The email with the passwords was not sent! Please manually copy the passwords *now* from the file: ${CRON_FOLDER}mautic.txt ! The content is displayed also below:"
-  cat "${CRON_FOLDER}mautic.txt"
+  echo "${content_file_txt}"
 fi
