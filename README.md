@@ -1,13 +1,8 @@
-# WORK IN PROGRESS - script is not functional
-
-# WORK IN PROGRESS - script is not yet functional
-
-# WORK IN PROGRESS - script will be functional
-
 # Presentation
 Installer script for Mautic V5 on VPS with `Debian 12` is a bash script that allows you to install all that is needed for a **fully production ready Mautic 5 instance**. It can be used to install also up to 5x Mautic 5 instances on the same server.
 
 # ✅ What is included
+13.04.2025: Functionalities are to be updated.
 | INCLUDED | DESCRIPTION |
 |--|--|
 | `nginx` | Is used as web server |
