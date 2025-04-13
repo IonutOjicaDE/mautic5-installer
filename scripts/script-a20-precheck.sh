@@ -105,6 +105,29 @@ while true; do
       file_config_errors=1
     fi
 
+
+    if [[ -n "${MAUTIC_EXTENSIONS[*]}" ]]; then
+      show_info ${ICON_INFO} "Checking if Mautic extensions in config file are valid on Packagist..."
+
+      for extension in "${MAUTIC_EXTENSIONS[@]}"; do
+        if [[ ! "$extension" =~ ^[a-z0-9._-]+/[a-z0-9._-]+$ ]]; then
+          show_info ${ICON_ERR} "Extension '${extension}' has invalid format (should be vendor/package)."
+          file_config_errors=1
+          continue
+        fi
+        PACKAGE_NAME=$(echo "$extension" | sed 's/\//%2F/g')
+        if curl -s -f "https://repo.packagist.org/p2/${PACKAGE_NAME}.json" > /dev/null; then
+          show_info ${ICON_OK} "Extension '${extension}' exists on Packagist."
+        else
+          show_info ${ICON_ERR} "Extension '${extension}' is NOT valid or not accessible on Packagist!"
+          file_config_errors=1
+        fi
+      done
+    else
+      show_info ${ICON_INFO} "No Composer extensions defined in MAUTIC_EXTENSIONS."
+    fi
+
+
     ADMINER_DOWNLOAD_URL="https://github.com/adminerevo/adminerevo/releases/download/v${ADMINER_VERSION}/adminer-${ADMINER_VERSION}.php"
     if wget --spider "${ADMINER_DOWNLOAD_URL}" 2>/dev/null; then
       show_info ${ICON_OK} "Adminer version ${ADMINER_VERSION} found."
