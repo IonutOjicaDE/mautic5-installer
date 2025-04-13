@@ -38,6 +38,7 @@ Whi='\e[0;37m';     BWhi='\e[1;37m';    UWhi='\e[4;37m';    IWhi='\e[0;97m';    
 ICON_OK='✅'   # ${ICON_OK}
 ICON_ERR='❌'  # ${ICON_ERR}
 ICON_INFO='📝' # ${ICON_INFO}
+ICON_WARN='⚠️' # ${ICON_WARN}
 ICON_QUE='❓'  # ${ICON_QUE}
 ICON_IMP='❗'  # ${ICON_IMP}
 ICON_NOGO='⛔' # ${ICON_NOGO}
