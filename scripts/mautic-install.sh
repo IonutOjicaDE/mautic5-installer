@@ -52,7 +52,7 @@ function show_info() {
   if [[ "$seconds" =~ ^[1-9]$ ]]; then
     execution_count=$((execution_count + 1))
     echo -e "\n${BCya}[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  ${state}  ${comment}"
-    echo -e "[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  ⌛  (${execution_count}) We continue after ${seconds} second$([[ $seconds != 1 ]] && echo "s") ..."
+    echo -e "[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  ⌛  (${execution_count}) We continue after ${seconds} second$([[ ${seconds} != 1 ]] && echo "s") ..."
     echo -e "${RCol}"
 
     line=$(printf '%.0s.' {1..100})
@@ -102,8 +102,15 @@ show_info ${ICON_OK} 'Definitions loaded !'
 URL_TO_ARCHIVE='https://github.com/IonutOjicaDE/mautic5-installer/archive/refs/heads/main.zip'
 PWD="$(pwd)/"
 INSTALL_FOLDER="${PWD}mautic5-installer-main/"
-FILE_CONF="${INSTALL_FOLDER}scripts/mautic-install.conf"
 TEMP_FOLDER="${PWD}temp/"
+FILE_CONF_ORIG="${INSTALL_FOLDER}scripts/mautic-install.conf"
+FILE_CONF="${TEMP_FOLDER}scripts/mautic-install.conf"
+FILE_PASS="${TEMP_FOLDER}mautic.sh"
+
+INSTALL_RESUME_FILE="${PWD}.install_resume"
+FORCE_INSTALL=false
+
+
 mkdir -p "${TEMP_FOLDER}"
 
 show_info ${ICON_INFO} 'Update of the packages...'
@@ -143,41 +150,139 @@ if [[ ! -d "${INSTALL_FOLDER}" ]]; then
   exit 1
 fi
 rm "${PWD}mautic-installer.zip"
+cp ${FILE_CONF_ORIG} ${FILE_CONF}
+
+
+###############################################################################################
+#####                               CHECK PREVIOUS RUNS                                   #####
+###############################################################################################
+
+
+for arg in "$@"; do
+  if [[ "$arg" == "--force" ]]; then
+    FORCE_INSTALL=true
+    show_info ${ICON_INFO} 'Installation starts from beginning, ignoring the previous executions...'
+  fi
+done
+
+
+START_FROM=""
+if [[ "$FORCE_INSTALL" == false && -f "$INSTALL_RESUME_FILE" ]]; then
+  START_FROM=$(<"$INSTALL_RESUME_FILE")
+  show_info ${ICON_INFO} "Previous installation failed. Restart from: ${START_FROM}"
+
+  if [[ -e "${FILE_CONF}" ]]; then
+    source "${FILE_CONF}"
+    show_info ${ICON_INFO} "Configuration file ${FILE_CONF} found and loaded."
+  fi
+
+  if [[ -e "${FILE_PASS}" ]]; then
+    source "${FILE_PASS}"
+    show_info ${ICON_INFO} "Passwords file ${FILE_PASS} found and loaded."
+  fi
+fi
+
+###############################################################################################
+#####                              POPULATE SCRIPTS ARRAY                                 #####
+###############################################################################################
+
+install_script_files=()
+
+for file in "${INSTALL_FOLDER}scripts"/script-[a-zA-Z][0-9][0-9]-*.sh; do
+  # check that the file exists (avoid the case where the glob doesn't find anything)
+  [[ -e "$file" ]] || continue
+
+  filename=$(basename "$file")
+  install_script_files+=("$filename")
+done
+
+IFS=$'\n' sorted=($(printf "%s\n" "${install_script_files[@]}" | sort))
+unset IFS
+install_script_files=("${sorted[@]}")
+
+
+###############################################################################################
+#####                           CHOOSE START SCRIPT ON RESTART                            #####
+###############################################################################################
+# If we restart, offer an interactive selector
+if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
+  START_FROM=$(<"$INSTALL_RESUME_FILE")
+  show_info ${ICON_INFO} "Previous installation failed. Select a script to continue from."
+
+  selected_index=0
+  for i in "${!install_script_files[@]}"; do
+    if [[ "${install_script_files[$i]}" == "$START_FROM" ]]; then
+      selected_index=$i
+      break
+    fi
+  done
+
+  # Function to draw the menu
+  draw_menu() {
+    clear
+    echo -e "\nUse ↑ ↓ arrows to select a script to continue from. Press Enter to confirm. Ctrl+C to cancel.\n"
+    for i in "${!install_script_files[@]}"; do
+      if [[ $i -eq $selected_index ]]; then
+        echo -e " ${BWhi}${On_IBlu}> [${install_script_files[$i]}]${RCol}"
+      else
+        echo "   ${install_script_files[$i]}"
+      fi
+    done
+  }
+
+
+  draw_menu
+
+  # Lissen to the keys ↑ ↓ Enter
+  while true; do
+    read -rsn1 key
+    if [[ $key == $'\x1b' ]]; then
+      read -rsn2 -t 0.1 key2
+      key+="$key2"
+    fi
+
+    case "$key" in
+      $'\x1b[A') # UP
+        (( selected_index-- ))
+        (( selected_index < 0 )) && selected_index=$((${#install_script_files[@]} - 1))
+        ;;
+      $'\x1b[B') # DOWN
+        (( selected_index++ ))
+        (( selected_index >= ${#install_script_files[@]} )) && selected_index=0
+        ;;
+      "") # ENTER
+        START_FROM="${install_script_files[$selected_index]}"
+        break
+        ;;
+    esac
+    draw_menu
+  done
+fi
 
 
 ###############################################################################################
 #####                               EXECUTE SCRIPT FILES                                  #####
 ###############################################################################################
 
-install_script_files=(
-  'script-a10-definitions.sh'
-  'script-a20-precheck.sh'
-  'script-a30-input-values.sh'
-  'script-a40-create-pass.sh'
-  'script-b10-update-nginx-mariadb.sh'
-  'script-b20-install-php-default-conf.sh'
-  'script-b30-install-mautic.sh'
-  'script-b40-create-database.sh'
-  'script-b50-initialize-mautic.sh'
-  'script-b60-customize-mautic.sh'
-  'script-c10-certbot.sh'
-  'script-c20-install-theme.sh'
-  'script-c30-mysql-localphp.sh'
-  'script-c40-mysql-owner.sh'
-  'script-c50-plugins.sh'
-  'script-c60-install-adminer.sh'
-  'script-d10-adjusting.sh'
-  'script-e10-ufw-fail2ban.sh'
-  'script-e20-crons.sh'
-  'script-e30-send-pass-to-email.sh'
-  'script-e40-clean.sh'
-  'script-f10-summary.sh'
-)
-
+SKIP=true
 for install_script_file in "${install_script_files[@]}"; do
+  if [[ "$install_script_file" == "$START_FROM" || "$START_FROM" == "" ]]; then
+    SKIP=false
+  fi
+
+  if [[ "$SKIP" == true ]]; then
+    continue
+  fi
+
   show_info ${ICON_INFO} "Executing ${install_script_file}..." 1
-  source "${INSTALL_FOLDER}scripts/${install_script_file}"
+
+  if ! source "${INSTALL_FOLDER}scripts/${install_script_file}"; then
+    show_info ${ICON_INFO} "Error executing ${install_script_file}."
+    echo "$install_script_file" > "$INSTALL_RESUME_FILE"
+    exit 1
+  fi
 done
+
 
 show_info ${ICON_INFO} 'Removing installation folder...'
 rm -rf "${INSTALL_FOLDER}"
