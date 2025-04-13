@@ -27,11 +27,10 @@ else
   new_content=""
 
   while IFS= read -r line; do
-    if [[ "$line" =~ ^\); ]]; then
+    if [[ "$line" == ");" ]]; then
       for key in "${!PARAMS_TO_ADD[@]}"; do
         if ! grep -q "'$key'" <<< "$new_content"; then
-          new_content+="    '$key' => '${PARAMS_TO_ADD[$key]}',"$'\n'
-          echo "✔️  Adăugat: $key"
+          new_content+=$'\t'"'$key' => '${PARAMS_TO_ADD[$key]}',"$'\n'
         fi
       done
     fi
