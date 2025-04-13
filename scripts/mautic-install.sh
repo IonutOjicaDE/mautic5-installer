@@ -104,7 +104,7 @@ PWD="$(pwd)/"
 INSTALL_FOLDER="${PWD}mautic5-installer-main/"
 TEMP_FOLDER="${PWD}temp/"
 FILE_CONF_ORIG="${INSTALL_FOLDER}scripts/mautic-install.conf"
-FILE_CONF="${TEMP_FOLDER}scripts/mautic-install.conf"
+FILE_CONF="${TEMP_FOLDER}mautic-install.conf"
 FILE_PASS="${TEMP_FOLDER}mautic.sh"
 
 INSTALL_RESUME_FILE="${PWD}.install_resume"
