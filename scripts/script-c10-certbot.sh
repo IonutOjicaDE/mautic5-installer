@@ -39,7 +39,7 @@ server {
     fastcgi_pass unix:/run/php/php${PHP_VERSION}-fpm.sock;
   }
 
-  location ~* ^/(index.php|commands/commands.php|database/database.php) {
+  location ~* ^/(index.php) {
     # try_files \$uri =404;
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
     # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
@@ -47,6 +47,38 @@ server {
     fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
     fastcgi_index index.php;
     fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+    include fastcgi_params;
+
+    fastcgi_buffer_size 128k;
+    fastcgi_buffers 256 16k;
+    fastcgi_busy_buffers_size 256k;
+    fastcgi_temp_file_write_size 256k;
+  }
+
+  location = /database.php {
+    alias ${MAUTIC_FOLDER}database/database.php;
+    # try_files \$uri =404;
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+
+    fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME ${MAUTIC_FOLDER}database/database.php;
+    include fastcgi_params;
+
+    fastcgi_buffer_size 128k;
+    fastcgi_buffers 256 16k;
+    fastcgi_busy_buffers_size 256k;
+    fastcgi_temp_file_write_size 256k;
+  }
+
+  location = /commands.php {
+    alias ${MAUTIC_FOLDER}commands/commands.php;
+    # try_files \$uri =404;
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+
+    fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME ${MAUTIC_FOLDER}commands/commands.php;
     include fastcgi_params;
 
     fastcgi_buffer_size 128k;
