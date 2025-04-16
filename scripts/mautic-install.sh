@@ -44,16 +44,20 @@ ICON_IMP='❗'  # ${ICON_IMP}
 ICON_NOGO='⛔' # ${ICON_NOGO}
 
 execution_count=0
+LAST_COMMENT=""
+LAST_ICON=""
 
 function show_info() {
   local state="$1"
   local comment="$2"
   local seconds="$3"
 
+  local now="[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript"
+
   if [[ "$seconds" =~ ^[1-9]$ ]]; then
     execution_count=$((execution_count + 1))
-    echo -e "\n${BCya}[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  ${state}  ${comment}"
-    echo -e "[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  ⌛  (${execution_count}) We continue after ${seconds} second$([[ ${seconds} != 1 ]] && echo "s") ..."
+    echo -e "\n${BCya}${now}  ${state}  ${comment}"
+    echo -e "${now}  ⌛  (${execution_count}) We continue after ${seconds} second$([[ ${seconds} != 1 ]] && echo "s") ..."
     echo -e "${RCol}"
 
     line=$(printf '%.0s.' {1..100})
@@ -66,8 +70,15 @@ function show_info() {
 
     echo -e "\n"
   else
-    echo -e "${BCya}[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  ${state}  ${comment}${RCol}"
+    if [[ "$state" == "$ICON_OK" && "$LAST_ICON" == "$ICON_INFO" && "$seconds" == 0 ]]; then
+      tput cuu1 && tput el
+      echo -e "${BCya}${now}  ${ICON_OK}  ${LAST_COMMENT} ${comment}${RCol}"
+    else
+      echo -e "${BCya}${now}  ${state}  ${comment}${RCol}"
+    fi
   fi
+  LAST_ICON="$state"
+  LAST_COMMENT="$comment"
 }
 
 show_debug() {
