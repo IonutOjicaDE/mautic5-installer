@@ -1,0 +1,7 @@
+framework:
+  messenger:
+    transports:
+      email:
+        dsn: doctrine://default
+        options:
+          rate_limiter: email_limit

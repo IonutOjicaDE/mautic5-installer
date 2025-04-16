@@ -1,0 +1,17 @@
+# /etc/systemd/system/mautic-consume-hit@.service
+[Unit]
+Description=Mautic Messenger Worker (hit) #%i
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=###MAUTIC_FOLDER###
+ExecStart=/usr/bin/php ###MAUTIC_FOLDER###bin/console messenger:consume hit
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

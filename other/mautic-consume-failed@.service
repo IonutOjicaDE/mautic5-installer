@@ -1,0 +1,17 @@
+# /etc/systemd/system/mautic-consume-failed@.service
+[Unit]
+Description=Mautic Messenger Worker (failed) #%i
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=###MAUTIC_FOLDER###
+ExecStart=/usr/bin/php ###MAUTIC_FOLDER###bin/console messenger:consume failed
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

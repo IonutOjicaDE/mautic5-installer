@@ -1,0 +1,6 @@
+framework:
+  rate_limiter:
+    email_limit:
+      policy: token_bucket
+      limit: 10
+      rate: { interval: '1 second', amount: 10 }
