@@ -91,6 +91,7 @@ function answer_yes_else_stop() {
   show_info ${ICON_QUE} "$1"
   read -p 'Answer: ' answer
   if ! check_positive "${answer}"; then
+    echo "$install_script_file" > "$INSTALL_RESUME_FILE"
     exit 1
   fi
   return 0
@@ -127,22 +128,23 @@ mkdir -p "${TEMP_FOLDER}"
 
 show_info ${ICON_INFO} 'Update of the packages...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq update >/dev/null
+show_info ${ICON_OK} 'done.' 0
 show_info ${ICON_INFO} 'Upgrade of the packages...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq upgrade >/dev/null
-show_info ${ICON_OK} 'Update and upgrade finished.'
+show_info ${ICON_OK} 'done.' 0
 
 show_info ${ICON_INFO} 'Installing unzip...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq install unzip >/dev/null
-show_info ${ICON_OK} 'Unzip installed.'
+show_info ${ICON_OK} 'done.' 0
 
 
 if [[ -e "${PWD}mautic-installer.zip" ]]; then
   rm "${PWD}mautic-installer.zip"
-  show_info ${ICON_INFO} 'Old scripts archive removed...'
+  show_info ${ICON_INFO} 'Old scripts archive removed.'
 fi
 if [[ -d "${INSTALL_FOLDER}" ]]; then
   rm -r "${INSTALL_FOLDER}"
-  show_info ${ICON_INFO} 'Old installation folder removed...'
+  show_info ${ICON_INFO} 'Old installation folder removed.'
 fi
 
 show_info ${ICON_INFO} 'Downloading scripts and utilities needed for installation...'
@@ -163,6 +165,7 @@ if [[ ! -d "${INSTALL_FOLDER}" ]]; then
 fi
 rm "${PWD}mautic-installer.zip"
 cp ${FILE_CONF_ORIG} ${FILE_CONF}
+show_info ${ICON_OK} 'done.' 0
 
 
 ###############################################################################################
@@ -298,7 +301,8 @@ done
 
 show_info ${ICON_INFO} 'Removing installation folder...'
 rm -rf "${INSTALL_FOLDER}"
-show_info ${ICON_OK} 'Installation folder removed. Execution of installation script finished.'
+show_info ${ICON_OK} 'done.' 0
+show_info ${ICON_OK} "Execution of installation script finished. Enjoy Mautic ${MAUTIC_VERSION} !" 0
 
 ####################################################################################
 #              IonutOjica: External resources to create the script:                #
