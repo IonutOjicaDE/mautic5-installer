@@ -240,7 +240,7 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
       if [[ $i -eq $selected_index ]]; then
         echo -e " ${BWhi}${On_IBlu}> [${install_script_files[$i]}]${RCol}"
       else
-        echo "   ${install_script_files[$i]}"
+        echo "    ${install_script_files[$i]}"
       fi
     done
   }
