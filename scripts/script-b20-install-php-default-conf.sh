@@ -9,6 +9,7 @@ if [ -z "${MAUTIC_COUNT}" ]; then
 
   show_info ${ICON_INFO} 'Install MidnightCommander - orthodox File Explorer...'
   DEBIAN_FRONTEND=noninteractive apt-get -yq install mc >/dev/null
+  show_info ${ICON_OK} 'done.' 0
 
   show_info ${ICON_INFO} 'Install php...'
   DEBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,bcmath} >/dev/null
@@ -101,21 +102,21 @@ EOF
   # Install nodejs and npm (npm is included in nodejs package for debian)
   DEBIAN_FRONTEND=noninteractive apt-get -yq install nodejs >/dev/null
 
-  show_info ${ICON_OK} 'nodejs and npm installed.'
+  show_info ${ICON_OK} 'done.' 0
 
 
   show_info ${ICON_INFO} 'Install composer...'
 
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer >/dev/null
 
-  show_info ${ICON_OK} 'Composer installed.'
+  show_info ${ICON_OK} 'done.' 0
 
 
   show_info ${ICON_INFO} 'Install git...'
 
   DEBIAN_FRONTEND=noninteractive apt-get -yq install git >/dev/null
 
-  show_info ${ICON_OK} 'git installed.'
+  show_info ${ICON_OK} 'done.' 0
 
 else
   show_info ${ICON_INFO} 'No install or configuration of php or configuration of Nginx'
