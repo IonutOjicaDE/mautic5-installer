@@ -105,7 +105,7 @@ function check_positive() {
   return 1
 }
 
-show_info ${ICON_OK} 'Definitions loaded !'
+show_info ${ICON_OK} 'done.' 0
 
 
 ###############################################################################################
