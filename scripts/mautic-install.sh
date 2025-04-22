@@ -245,8 +245,16 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
   }
 
 draw_menu() {
-  tput civis                # ascunde cursorul
-  echo -en "\033[H"         # mută cursorul sus fără clear (evită ștergerea istoricului)
+  local first_time="$1"
+  local menu_height=$(( ${#install_script_files[@]} + 3 ))
+
+  tput civis  # ascunde cursorul
+
+  if [[ -z "$first_time" ]]; then
+    # Dacă nu e prima dată, mergem înapoi ca să suprascriem vechiul meniu
+    echo -en "\033[${menu_height}A"
+  fi
+
   echo -e "\nUse ↑ ↓ arrows to select a script to continue from. Press Enter to confirm. Ctrl+C to cancel.\n"
 
   for i in "${!install_script_files[@]}"; do
@@ -256,11 +264,12 @@ draw_menu() {
       echo "    ${install_script_files[$i]}"
     fi
   done
-  tput cnorm                # readuce cursorul
+
+  tput cnorm  # readuce cursorul
 }
 
 
-  draw_menu
+  draw_menu first
 
   # Lissen to the keys ↑ ↓ Enter
   while true; do
