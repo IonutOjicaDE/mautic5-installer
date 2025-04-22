@@ -91,7 +91,6 @@ function answer_yes_else_stop() {
   show_info ${ICON_QUE} "$1"
   read -p 'Answer: ' answer
   if ! check_positive "${answer}"; then
-    echo "$install_script_file" > "$INSTALL_RESUME_FILE"
     exit 1
   fi
   return 0
@@ -233,7 +232,7 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
   done
 
   # Function to draw the menu
-  draw_menu() {
+  draw_menu2() {
     clear
     echo -e "\nUse ↑ ↓ arrows to select a script to continue from. Press Enter to confirm. Ctrl+C to cancel.\n"
     for i in "${!install_script_files[@]}"; do
@@ -244,6 +243,21 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
       fi
     done
   }
+
+draw_menu() {
+  tput civis                # ascunde cursorul
+  echo -en "\033[H"         # mută cursorul sus fără clear (evită ștergerea istoricului)
+  echo -e "\nUse ↑ ↓ arrows to select a script to continue from. Press Enter to confirm. Ctrl+C to cancel.\n"
+
+  for i in "${!install_script_files[@]}"; do
+    if [[ $i -eq $selected_index ]]; then
+      echo -e " ${BWhi}${On_IBlu}> [${install_script_files[$i]}]${RCol}"
+    else
+      echo "    ${install_script_files[$i]}"
+    fi
+  done
+  tput cnorm                # readuce cursorul
+}
 
 
   draw_menu
@@ -290,14 +304,18 @@ for install_script_file in "${install_script_files[@]}"; do
   fi
 
   show_info ${ICON_INFO} "Executing ${install_script_file}..." 1
+  echo "$install_script_file" > "$INSTALL_RESUME_FILE"
 
   if ! source "${INSTALL_FOLDER}scripts/${install_script_file}"; then
     show_info ${ICON_INFO} "Error executing ${install_script_file}."
-    echo "$install_script_file" > "$INSTALL_RESUME_FILE"
     exit 1
   fi
 done
 
+if [[ -f "$INSTALL_RESUME_FILE" ]]; then
+  rm "$INSTALL_RESUME_FILE"
+  show_info ${ICON_INFO} "File $INSTALL_RESUME_FILE has been deleted."
+fi
 
 show_info ${ICON_INFO} 'Removing installation folder...'
 rm -rf "${INSTALL_FOLDER}"
