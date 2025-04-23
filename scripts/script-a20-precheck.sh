@@ -1,4 +1,6 @@
 #!/bin/bash
+VERSION="0.0.2"
+show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
 #####      Loop to edit and check the configuration file needed for the installation      #####
@@ -71,7 +73,7 @@ while true; do
 
     source "${FILE_CONF}"
 
-    show_info ${ICON_OK} 'Config file loaded !'
+    show_info ${ICON_OK} "Config file ${FILE_CONF} V${VERSION} loaded !"
 
     if [ -z "${SENDER_FIRSTNAME}" ]; then
       show_info ${ICON_ERR} "First name is empty. Opening the configuration file in the Editor..."

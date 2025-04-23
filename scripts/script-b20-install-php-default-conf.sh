@@ -1,4 +1,6 @@
 #!/bin/bash
+VERSION="0.0.2"
+show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
 #####                          Install php, configure php, nginx                          #####
