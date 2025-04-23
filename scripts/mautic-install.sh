@@ -1,4 +1,5 @@
 #!/bin/bash
+VERSION="0.0.2"
 
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
@@ -10,14 +11,18 @@
 # ssh root@m.ionutojica.ro
 # ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@m.ionutojica.ro
 
-# Run with: bash <(wget -qO- https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh)
+# Run with:
+# bash <(wget -qO- "https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh?$(date +%s)")
+# or
+# filename="mautic-install-$(date +%Y%m%d-%H%M%S).sh"; wget -qO "$filename" https://raw.githubusercontent.com/IonutOjicaDE/mautic5-installer/main/scripts/mautic-install.sh && bash "$filename"
+
 # ✅ ❌ ❓ ❗ ❎ ⛔ 🛈 ℹ️ 📝
 
 ###############################################################################################
 #####                              DEFINE COLORS AS NAMES                                 #####
 ###############################################################################################
 
-echo "[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  📝  Loading definitions ..."
+echo "[$(date +%Y-%m-%d_%H:%M:%S)]  InstallScript  📝  Start executing mautic-install.sh V${VERSION}."
 
 RCol='\e[0m'    # Text Reset
 
@@ -44,7 +49,7 @@ ICON_IMP='❗'  # ${ICON_IMP}
 ICON_NOGO='⛔' # ${ICON_NOGO}
 
 execution_count=0
-LAST_COMMENT=""
+LAST_COMMENT=ICON_INFO
 LAST_ICON=""
 
 function show_info() {
@@ -104,7 +109,7 @@ function check_positive() {
   return 1
 }
 
-show_info ${ICON_OK} 'done.' 0
+show_info ${ICON_OK} 'Definitions loaded.'
 
 
 ###############################################################################################
@@ -223,6 +228,7 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
   START_FROM=$(<"$INSTALL_RESUME_FILE")
   show_info ${ICON_INFO} "Previous installation failed. Select a script to continue from."
 
+  # Find the index of the selected script in the array
   selected_index=0
   for i in "${!install_script_files[@]}"; do
     if [[ "${install_script_files[$i]}" == "$START_FROM" ]]; then
@@ -231,70 +237,51 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
     fi
   done
 
-  # Function to draw the menu
-  draw_menu2() {
-    clear
-    echo -e "\nUse ↑ ↓ arrows to select a script to continue from. Press Enter to confirm. Ctrl+C to cancel.\n"
-    for i in "${!install_script_files[@]}"; do
-      if [[ $i -eq $selected_index ]]; then
-        echo -e " ${BWhi}${On_IBlu}> [${install_script_files[$i]}]${RCol}"
-      else
-        echo "    ${install_script_files[$i]}"
-      fi
-    done
-  }
+  # Take the size of the terminal
+  rows=$(tput lines)
+  cols=$(tput cols)
 
-draw_menu() {
-  local first_time="$1"
-  local menu_height=$(( ${#install_script_files[@]} + 3 ))
+  # Count the options from the menu
+  menu_items_count=${#install_script_files[@]}
 
-  tput civis  # ascunde cursorul
+  # Vertical lines needed: 6 (title + text + 2 margins) + 1 line per option
+  menu_height=$((menu_items_count + 6))
 
-  if [[ -z "$first_time" ]]; then
-    # Dacă nu e prima dată, mergem înapoi ca să suprascriem vechiul meniu
-    echo -en "\033[${menu_height}A"
+  # Asure that we do not exceed the height of the terminal
+  if (( menu_height > rows - 2 )); then
+    menu_height=$((rows - 2))
   fi
 
-  echo -e "\nUse ↑ ↓ arrows to select a script to continue from. Press Enter to confirm. Ctrl+C to cancel.\n"
+  # Min recomended width
+  menu_width=$((cols < 50 ? 50 : cols - 10))
 
+  # Height of the options in the menu
+  menu_display_height=$((menu_height - 6))
+
+  # Create the menu options
+  whiptail_options=()
   for i in "${!install_script_files[@]}"; do
-    if [[ $i -eq $selected_index ]]; then
-      echo -e " ${BWhi}${On_IBlu}> [${install_script_files[$i]}]${RCol}"
-    else
-      echo "    ${install_script_files[$i]}"
-    fi
+    whiptail_options+=("$i" "${install_script_files[$i]}")
   done
 
-  tput cnorm  # readuce cursorul
-}
+  # Display the menu
+  tput sc
+  choice=$(whiptail --title "Continuare instalare" \
+    --default-item "$selected_index" \
+    --menu "Alege scriptul de la care să continui:" "$menu_height" "$menu_width" "$menu_display_height" \
+    "${whiptail_options[@]}" \
+    3>&1 1>&2 2>&3)
+  tput rc
+  tput ed
 
-
-  draw_menu first
-
-  # Lissen to the keys ↑ ↓ Enter
-  while true; do
-    read -rsn1 key
-    if [[ $key == $'\x1b' ]]; then
-      read -rsn2 -t 0.1 key2
-      key+="$key2"
-    fi
-
-    case "$key" in
-      $'\x1b[A') # UP
-        (( selected_index-- ))
-        (( selected_index < 0 )) && selected_index=$((${#install_script_files[@]} - 1))
-        ;;
-      $'\x1b[B') # DOWN
-        (( selected_index++ ))
-        (( selected_index >= ${#install_script_files[@]} )) && selected_index=0
-        ;;
-      "") # ENTER
-        START_FROM="${install_script_files[$selected_index]}"
-        break
-        ;;
-    esac
-    draw_menu
-  done
+  # Check if the user pressed Cancel
+  if [[ $? -eq 0 ]]; then
+    START_FROM="${install_script_files[$choice]}"
+    show_info ${ICON_INFO} "Ai ales să continui de la: $START_FROM"
+  else
+    show_info ${ICON_IMP} "Ai anulat instalarea."
+    exit 1
+  fi
 fi
 
 
@@ -312,7 +299,7 @@ for install_script_file in "${install_script_files[@]}"; do
     continue
   fi
 
-  show_info ${ICON_INFO} "Executing ${install_script_file}..." 1
+#  show_info ${ICON_INFO} "Executing ${install_script_file}..." 1
   echo "$install_script_file" > "$INSTALL_RESUME_FILE"
 
   if ! source "${INSTALL_FOLDER}scripts/${install_script_file}"; then
