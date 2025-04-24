@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -20,7 +20,7 @@ chown -R www-data:www-data "${CRON_FOLDER}"
 chown -R www-data:www-data "${BACKUP_FILES_FOLDER}"
 chmod -R 755 "${CRON_FOLDER}"
 chmod -R 755 "${BACKUP_FILES_FOLDER}"
-show_info ${ICON_OK} 'installed and permissions set.' 0
+show_info ${ICON_OK} ' done.' 0
 
 
 show_info ${ICON_OK} 'Scheduling crons for web user...'
@@ -44,14 +44,14 @@ EOF
 echo "${file_content}" >> crontab_temp
 crontab -u www-data crontab_temp
 rm crontab_temp
-show_info ${ICON_OK} 'scheduled.' 0
+show_info ${ICON_OK} 'done.' 0
 
 
 show_info ${ICON_INFO} 'Installing cron script for root user...'
 sed -i "s|###CRON_FOLDER###|${CRON_FOLDER}|g" "${INSTALL_FOLDER}other/reset-mautic-permissions.sh"
 mv "${INSTALL_FOLDER}other/reset-mautic-permissions.sh" "${ROOT_FILES_FOLDER}reset-mautic${MAUTIC_COUNT}-permissions.sh"
 chmod a+x "${ROOT_FILES_FOLDER}reset-mautic${MAUTIC_COUNT}-permissions.sh"
-show_info ${ICON_OK} 'installed and permissions set.' 0
+show_info ${ICON_OK} ' done.' 0
 
 
 show_info ${ICON_OK} 'Scheduling cron for root user...'
@@ -67,7 +67,7 @@ EOF
 echo "${file_content}" >> crontab_temp
 crontab crontab_temp
 rm crontab_temp
-show_info ${ICON_OK} 'scheduled.' 0
+show_info ${ICON_OK} ' done.' 0
 
 
 show_info ${ICON_INFO} 'Installing messenger:consume workers...'
@@ -97,7 +97,7 @@ for SERVICE in email failed hit; do
   systemctl start ${SERVICE_NAME}
 
   if systemctl is-active --quiet ${SERVICE_NAME}; then
-    show_info ${ICON_OK} "${SERVICE_NAME} is installed and activ."
+    show_info ${ICON_OK} " done." 0
   else
     show_info ${ICON_ERR} "${SERVICE_NAME} is installed but did not start."
   fi
@@ -107,14 +107,14 @@ done
 show_info ${ICON_INFO} 'Installing sending email rate limiter...'
 mv "${INSTALL_FOLDER}other/rate_limiter.yaml" "${MAUTIC_FOLDER}config/packages/rate_limiter.yaml"
 mv "${INSTALL_FOLDER}other/messenger.yaml" "${MAUTIC_FOLDER}config/packages/messenger.yaml"
-show_info ${ICON_OK} 'installed.' 0
+show_info ${ICON_OK} ' done.' 0
 
 
-show_info ${ICON_INFO} 'Clearing cache...'
+show_info ${ICON_INFO} 'Clearing cache and setting permissions...'
 
 chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
 
 runuser -u www-data -- php "${CRON_FOLDER}cron-clear-cache.php"
 
-show_info ${ICON_OK} 'Crons are installed.'
+show_info ${ICON_OK} ' done.'

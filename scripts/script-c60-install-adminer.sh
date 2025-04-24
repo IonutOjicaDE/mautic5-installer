@@ -1,12 +1,12 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
 #####                                 Install Adminer                                     #####
 ###############################################################################################
 
-show_info ${ICON_INFO} 'Download Adminer...'
+show_info ${ICON_INFO} 'Download and install Adminer...'
 
 #wget "${URL_TO_FILES}bazadate.zip"
 #unzip -q bazadate.zip -d "${MAUTIC_FOLDER}"
@@ -29,4 +29,4 @@ chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
 
 
-show_info ${ICON_OK} 'Adminer is installed.'
+show_info ${ICON_OK} ' done.' 0
