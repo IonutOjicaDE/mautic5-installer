@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
@@ -230,11 +230,14 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
 
   # Find the index of the selected script in the array
   selected_index=0
+  max_length=0
   for i in "${!install_script_files[@]}"; do
-    if [[ "${install_script_files[$i]}" == "$START_FROM" ]]; then
+    name="${install_script_files[$i]}"
+    if [[ "$name" == "$START_FROM" ]]; then
       selected_index=$i
-      break
     fi
+    len=${#name}
+    (( len > max_length )) && max_length=$len
   done
 
   # Take the size of the terminal
@@ -252,11 +255,11 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
     menu_height=$((rows - 2))
   fi
 
-  # Min recomended width
-  menu_width=$((cols < 50 ? 50 : cols - 10))
-
   # Height of the options in the menu
   menu_display_height=$((menu_height - 6))
+
+  # Min recomended width
+  menu_width=$(( (max_length + 20) < cols ? (max_length + 20) : cols ))
 
   # Create the menu options
   whiptail_options=()
@@ -299,7 +302,6 @@ for install_script_file in "${install_script_files[@]}"; do
     continue
   fi
 
-#  show_info ${ICON_INFO} "Executing ${install_script_file}..." 1
   echo "$install_script_file" > "$INSTALL_RESUME_FILE"
 
   if ! source "${INSTALL_FOLDER}scripts/${install_script_file}"; then
