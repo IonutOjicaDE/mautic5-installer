@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -65,8 +65,6 @@ FROM_PASS='${FROM_PASS}'
 "
 printf "#!/bin/bash\n%s\n" "${content_file_sh}" > "${TEMP_FOLDER}mautic.sh"
 
-show_info ${ICON_OK} 'Passwords saved in .sh file.'
-
 
 content_file_php=""
 content_file_txt=""
@@ -85,4 +83,4 @@ done <<< "${content_file_sh}"
 printf "<?php\n%s\n?>" "${content_file_php}" > "${TEMP_FOLDER}mautic.php"
 printf "${content_file_txt}" > "${TEMP_FOLDER}mautic.txt"
 
-show_info ${ICON_OK} 'Passwords saved in .php and .txt files.'
+show_info ${ICON_OK} ' done.' 0
