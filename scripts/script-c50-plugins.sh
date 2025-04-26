@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.3"
+VERSION="0.0.4"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -12,7 +12,7 @@ wget -q 'https://github.com/IonutOjicaDE/mautic-commands/archive/refs/heads/main
 unzip -q "${INSTALL_FOLDER}commands.zip" -d "${INSTALL_FOLDER}"
 mv "${INSTALL_FOLDER}mautic-commands-main" "${MAUTIC_FOLDER}commands"
 sed -i "s|/var/mautic-crons/|${CRON_FOLDER}|g" "${MAUTIC_FOLDER}commands/commands.php"
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
 
 
 if false; then # first do nothing
