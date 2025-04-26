@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSION="0.0.3"
-show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
+VERSION="0.0.4"
+show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################
 #                                                                             #
@@ -31,22 +31,22 @@ echo 'Source created by Matthias Reich - Info@Online-Business-Duplicator.de ( ht
 echo
 echo "===================================================================================================="
 echo
-echo -e "The subdomain where Mautic will be accessible:${UBlu} ${MAUTIC_SUBDOMAIN} ${RCol}"
+echo -e "The subdomain where Mautic will be accessible: ${UBlu}${MAUTIC_SUBDOMAIN}${RCol}"
 echo
-echo -e "The email address from which Mautic will send emails:${UBlu} ${SENDER_EMAIL} ${RCol}"
+echo -e "The email address from which Mautic will send emails: ${UBlu}${SENDER_EMAIL}${RCol}"
 echo
-echo -e "First and last name of the sender:${Cya} ${SENDER_FIRSTNAME} ${SENDER_LASTNAME} ${RCol}"
+echo -e "First and last name of the sender: ${Cya}${SENDER_FIRSTNAME} ${SENDER_LASTNAME}${RCol}"
 echo
-echo -e "Used time zone:${Cya} ${SENDER_TIMEZONE} ${RCol}"
+echo -e "Used time zone: ${Cya}${SENDER_TIMEZONE}${RCol}"
 echo
 if [ ! -z "${MAUTIC_COUNT}" ]; then
-  echo -e "Mautic installation count on this server:${Cya} ${MAUTIC_COUNT} ${RCol}"
+  echo -e "Mautic installation count on this server: ${Cya}${MAUTIC_COUNT}${RCol}"
   echo
 fi
-echo -e "Administration email will be sent from:${Cya} ${FROM_EMAIL} ${RCol} (to $(check_positive "${SEND_PASS_TO_SENDER_EMAIL}" && echo "${UBlu}${SENDER_EMAIL}${RCol} and to ")${UBlu}${ADMIN_EMAIL}${RCol}"
+echo -e "Administration email will be sent from: ${Cya}${FROM_EMAIL}${RCol} (to $(check_positive "${SEND_PASS_TO_SENDER_EMAIL}" && echo "${UBlu}${SENDER_EMAIL}${RCol} and to ")${UBlu}${ADMIN_EMAIL}${RCol})"
 echo
 if [ "${SSL_CERTIFICATE,,}" == "test" ]; then
-  echo 'Debug mode enabled: we will use the option --test-cert to obtain a SSL certificate.'
+  echo -e "Debug mode enabled: we will use the option ${Cya}--test-cert${RCol} to obtain a SSL certificate."
   echo
 elif [ "${SSL_CERTIFICATE,,}" == "yes" ]; then
   echo 'We will try to obtain a SSL certificate.'
