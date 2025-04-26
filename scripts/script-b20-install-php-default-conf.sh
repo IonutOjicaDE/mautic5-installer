@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSION="0.0.3"
-show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
+VERSION="0.0.4"
+show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
 #####                          Install php, configure php, nginx                          #####
@@ -109,7 +109,7 @@ EOF
   show_info ${ICON_OK} 'done.' 0
 
 
-  show_info ${ICON_INFO} 'Install nodejs and npm...'
+  show_info ${ICON_INFO} 'Installing nodejs and npm...'
   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - >/dev/null
   # Install nodejs and npm (npm is included in nodejs package for debian)
   DEBIAN_FRONTEND=noninteractive apt-get -yq install nodejs >/dev/null
@@ -122,7 +122,7 @@ EOF
   fi
 
 
-  show_info ${ICON_INFO} 'Install composer...'
+  show_info ${ICON_INFO} 'Installing composer...'
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer >/dev/null
   if [[ $? -ne 0 ]]; then
     show_info ${ICON_ERR} "Error: Installation of composer failed."
@@ -133,7 +133,7 @@ EOF
   fi
 
 
-  show_info ${ICON_INFO} 'Install git...'
+  show_info ${ICON_INFO} 'Installing git...'
   DEBIAN_FRONTEND=noninteractive apt-get -yq install git >/dev/null
   if [[ $? -ne 0 ]]; then
     show_info ${ICON_ERR} "Error: Installation of git failed."
