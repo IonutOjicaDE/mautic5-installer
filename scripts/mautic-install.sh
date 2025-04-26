@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.5"
+VERSION="0.0.6"
 
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
@@ -165,7 +165,9 @@ if [[ ! -d "${INSTALL_FOLDER}" ]]; then
   exit 1
 fi
 rm "${PWD}mautic-installer.zip"
-cp ${FILE_CONF_ORIG} ${FILE_CONF}
+if [[ ! -e "${FILE_CONF}" ]]; then
+  cp "${FILE_CONF_ORIG}" "${FILE_CONF}"
+fi
 show_info ${ICON_OK} 'done.' 0
 
 
