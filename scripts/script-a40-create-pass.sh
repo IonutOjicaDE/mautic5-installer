@@ -1,11 +1,13 @@
 #!/bin/bash
-VERSION="0.0.3"
+VERSION="0.0.4"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
 #####                        Creating passwords and saving the files                      #####
 ###############################################################################################
 
+
+show_info ${ICON_INFO} 'Creating passwords...'
 if [ -z "${MYSQL_ROOT_PASSWORD}" ]; then
       MYSQL_ROOT_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*;:,.-' < /dev/urandom | head -c40)
 fi
@@ -26,9 +28,9 @@ MYSQL_MAUTICUSER_PASSWORD=$(tr -dc 'A-Za-z0-9_#=+*;:,.-' < /dev/urandom | head -
               CRON_FOLDER="${MAUTIC_FOLDER}crons/"
       BACKUP_FILES_FOLDER="${MAUTIC_FOLDER}backups/"
         ROOT_FILES_FOLDER="/usr/local/bin/"
+show_info ${ICON_OK} 'done.' 0
 
-show_info ${ICON_OK} 'Passwords created. Saving the passwords in .sh, .php, .txt files...'
-
+show_info ${ICON_INFO} 'Saving the passwords in .sh, .php, .txt files...'
 content_file_sh="
 MAIN_DOMAIN='${MAIN_DOMAIN}'
 MAUTIC_SUBDOMAIN='${MAUTIC_SUBDOMAIN}'
@@ -83,4 +85,4 @@ done <<< "${content_file_sh}"
 printf "<?php\n%s\n?>" "${content_file_php}" > "${TEMP_FOLDER}mautic.php"
 printf "${content_file_txt}" > "${TEMP_FOLDER}mautic.txt"
 
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
