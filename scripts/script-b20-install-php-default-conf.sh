@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.5"
+VERSION="0.0.6"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
@@ -46,7 +46,7 @@ if [ -z "${MAUTIC_COUNT}" ]; then
 
 
   show_info ${ICON_INFO} 'Adjust configuration of web server Nginx...'
-  rm /etc/nginx/sites-enabled/default
+  rm -f /etc/nginx/sites-enabled/default
 
 cat << EOF > "/etc/nginx/conf.d/default.conf"
 server {
