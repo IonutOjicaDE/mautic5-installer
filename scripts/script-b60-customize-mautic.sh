@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -85,6 +85,6 @@ UPDATE lead_fields SET field_order = 36 WHERE alias = 'companydescription';
 EOF
 
 
-  show_info ${ICON_OK} 'Mautic customized.'
+  show_info ${ICON_OK} 'done.' 0
 
 fi
