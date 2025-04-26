@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -7,9 +7,10 @@ show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 ###############################################################################################
 
 
+mautic_conf_file="/etc/nginx/conf.d/mautic${MAUTIC_COUNT}.conf"
 show_info ${ICON_INFO} "Create nginx configuration file for Mautic (mautic${MAUTIC_COUNT}.conf)..."
 
-file_content="$(cat << EOF
+cat << EOF > "$mautic_conf_file"
 server {
   listen 80;
   listen [::]:80;
@@ -170,35 +171,33 @@ server {
   }
 }
 EOF
-)"
-mautic_conf_file="/etc/nginx/conf.d/mautic${MAUTIC_COUNT}.conf"
-echo "${file_content}" > "${mautic_conf_file}"
 systemctl reload nginx
 
-show_info ${ICON_OK} "Nginx configuration file for Mautic (mautic${MAUTIC_COUNT}.conf) created."
+show_info ${ICON_OK} 'done.' 0
 
 
 if [ "${SSL_CERTIFICATE,,}" == "test" ] || [ "${SSL_CERTIFICATE,,}" == "yes" ]; then
-  show_info ${ICON_INFO} 'We will try to obtain a SSL certificate...'
 
+  show_info ${ICON_INFO} 'Installing certbot to obtain a SSL certificate...'
   DEBIAN_FRONTEND=noninteractive apt-get -yq install certbot python3-certbot-nginx >/dev/null
   mkdir -p "${DOCROOT_FOLDER}.well-known/acme-challenge"
   chown www-data:www-data "${DOCROOT_FOLDER}.well-known/acme-challenge"
   #To pull the certificate during debuging: --test-cert
   #To test if a certificate can be pulled: --dry-run
   #https://letsencrypt.org/docs/staging-environment/
+  show_info ${ICON_OK} 'done.' 0
 
   if [ "${SSL_CERTIFICATE,,}" == "yes" ]; then
     show_info ${ICON_INFO} 'Pull production SSL certificate...'
     certbot --nginx --agree-tos --redirect --hsts --staple-ocsp --no-eff-email --email ${SENDER_EMAIL} -d ${MAUTIC_SUBDOMAIN}
   else
-    show_info ${ICON_INFO} 'Debug mode enabled: we will use the option --test-cert to obtain a SSL certificate...'
+    show_info ${ICON_INFO} 'Debug mode enabled: we will use the option --test-cert to obtain the SSL certificate...'
     certbot --nginx --agree-tos --redirect --hsts --staple-ocsp --no-eff-email --email ${SENDER_EMAIL} -d ${MAUTIC_SUBDOMAIN} --test-cert
   fi
   #The certificate can be removed with: certbot delete --cert-name ${MAUTIC_SUBDOMAIN}
 
   if [ $? -eq 0 ]; then
-    show_info ${ICON_OK} 'SSL certificate was pulled successfully.'
+    show_info ${ICON_OK} 'done.' 0
   else
     show_info ${ICON_ERR} 'There is an error and the SSL certificate was not obtained. Do you want to continue?'
     answer_yes_else_stop
