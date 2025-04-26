@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.6"
+VERSION="0.0.7"
 
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
@@ -316,7 +316,7 @@ fi
 show_info ${ICON_INFO} 'Removing installation folder...'
 rm -rf "${INSTALL_FOLDER}"
 show_info ${ICON_OK} 'done.' 0
-show_info ${ICON_OK} "Execution of installation script finished. Enjoy Mautic ${MAUTIC_VERSION} !" 0
+show_info ${ICON_OK} "Execution of installation script finished. Enjoy Mautic ${MAUTIC_VERSION} !"
 
 ####################################################################################
 #              IonutOjica: External resources to create the script:                #
