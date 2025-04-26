@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -8,29 +8,42 @@ show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 show_info ${ICON_INFO} 'Check if Apache2 is installed...'
 if dpkg -l | grep -qw apache2; then
-  show_info ${ICON_IMP} 'Apache2 is installed. Uninstalling...'
+  show_info ${ICON_IMP} 'is installed. Uninstalling...' 0
   systemctl stop apache2
   DEBIAN_FRONTEND=noninteractive apt-get -yq purge apache2 apache2-utils apache2-bin apache2.2-common >/dev/null
-  show_info ${ICON_OK} 'Apache2 succesfully uninstalled.'
+  show_info ${ICON_OK} 'done.' 0
 else
-  show_info ${ICON_OK} 'Apache2 is not installed.'
+  show_info ${ICON_OK} 'is not installed.' 0
 fi
 
 
 show_info ${ICON_INFO} 'Installing netcat-openbsd (to check the authentification to the email server trough nc)...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq install netcat-openbsd >/dev/null
+show_info ${ICON_OK} 'done.' 0
+
 show_info ${ICON_INFO} 'Installing cron (needed for scheduled actions for Mautic / cronjobs)...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq install cron >/dev/null
+show_info ${ICON_OK} 'done.' 0
 
 
 show_info ${ICON_INFO} 'Installing the needed packages to add new sources of packages in APT...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq install apt-transport-https lsb-release ca-certificates >/dev/null
+show_info ${ICON_OK} 'done.' 0
 
 show_info ${ICON_INFO} 'Download and add the GPG key for the php repository from Sury...'
-wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+output=$(wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg 2>&1)
+if [[ $? -ne 0 ]]; then
+  show_info ${ICON_ERR} 'ERROR:' 0
+  echo "$output"
+  show_info ${ICON_ERR} "Do you want to continue?"
+  answer_yes_else_stop && continue
+fi
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
+show_info ${ICON_OK} 'done.' 0
+
 show_info ${ICON_INFO} 'Update of the packages to include php repository...'
 DEBIAN_FRONTEND=noninteractive apt-get -yq update >/dev/null
+show_info ${ICON_OK} 'done.' 0
 
 
 show_info ${ICON_INFO} 'Starting to check the config file ...'
@@ -109,8 +122,6 @@ while true; do
 
 
     if [[ -n "${MAUTIC_EXTENSIONS[*]}" ]]; then
-      show_info ${ICON_INFO} "Checking if Mautic extensions in config file are valid on Packagist..."
-
       for extension in "${MAUTIC_EXTENSIONS[@]}"; do
         if [[ ! "$extension" =~ ^[a-z0-9._-]+/[a-z0-9._-]+$ ]]; then
           show_info ${ICON_ERR} "Extension '${extension}' has invalid format (should be vendor/package)."
@@ -140,18 +151,18 @@ while true; do
 
 
     if [ -z "${MAUTIC_COUNT}" ]; then
-      show_info ${ICON_INFO} "First installation of Mautic on this server."
+      show_info ${ICON_OK} "First installation of Mautic on this server."
     elif [[ "${MAUTIC_COUNT}" =~ ^[0-9]+$ ]]; then
       if [ "${MAUTIC_COUNT}" -gt 5 ]; then
         show_info ${ICON_ERR} "MAUTIC_COUNT=${MAUTIC_COUNT}: I strongly do not recommend to install more than 5 Mautic instances on the same server !"
         file_config_errors=1
       elif [ "${MAUTIC_COUNT}" -gt 1 ]; then
-        show_info ${ICON_INFO}  "Mautic installation count on this server: ${MAUTIC_COUNT}"
+        show_info ${ICON_OK}  "Mautic installation count on this server: ${MAUTIC_COUNT}"
       elif [ "${MAUTIC_COUNT}" -eq 1 ]; then
-        show_info ${ICON_INFO} "First installation of Mautic on this server."
+        show_info ${ICON_OK} "First installation of Mautic on this server."
         unset MAUTIC_COUNT
       else
-        show_info ${ICON_INFO} "I assume this will be first installation of Mautic on this server."
+        show_info ${ICON_OK} "I assume this will be first installation of Mautic on this server."
         unset MAUTIC_COUNT
       fi
     else
@@ -189,6 +200,7 @@ while true; do
       if apt-cache show "php${PHP_VERSION}" > /dev/null 2>&1; then
         show_info ${ICON_INFO} "Installing php${PHP_VERSION}..."
         DEBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} >/dev/null
+        show_info ${ICON_OK} 'done.' 0
       else
         show_info ${ICON_ERR} "PHP version ${PHP_VERSION} is not available. Do you want to specify another version and then try again?"
         answer_yes_else_stop && continue
@@ -211,12 +223,11 @@ while true; do
     SERVER=$(echo ${FROM_SERVER_PORT} | cut -d':' -f1)
     PORT=$(echo ${FROM_SERVER_PORT} | cut -d':' -f2)
 
-    nc -z -v -w5 ${SERVER} ${PORT}
-
-    if [ $? -eq 0 ]; then
-      show_info ${ICON_OK} "Successfully connected to server ${SERVER} on port ${PORT}."
+    if output=$(nc -z -v -w5 "${SERVER}" "${PORT}" 2>&1); then
+      show_info "$ICON_OK" "Successfully connected to server $SERVER on port $PORT."
     else
-      show_info ${ICON_ERR} "Connecting to server ${SERVER} on port ${PORT} is not possible !"
+      show_info "$ICON_ERR" "Connecting to server $SERVER on port $PORT is not possible!"
+      echo "$output"
       file_config_errors=1
     fi
 
