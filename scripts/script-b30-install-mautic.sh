@@ -1,10 +1,40 @@
 #!/bin/bash
-VERSION="0.0.4"
+VERSION="0.0.5"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
 #####                                 Install Mautic                                      #####
 ###############################################################################################
+
+safe_clear_folder() {
+  local folder="$1"
+
+  if [[ ! -d "$folder" || -z "$folder" || "$folder" == "/" ]]; then
+    echo "Critical error: Invalid folder ($folder). Aborting!"
+    exit 1
+  fi
+
+  find "$folder" -mindepth 1 -delete
+}
+
+
+if [ -d "${MAUTIC_FOLDER}" ]; then
+  if [ -z "$(ls -A "${MAUTIC_FOLDER}")" ]; then
+    show_info ${ICON_OK} "The folder ${MAUTIC_FOLDER} is empty."
+  else
+    show_info ${ICON_WARN} "Warning: The folder ${MAUTIC_FOLDER} is not empty. Content:"
+    ls -a "${MAUTIC_FOLDER}"
+    
+    show_info ${ICON_QUE} "Do you want to delete all content and continue installation?"
+    answer_yes_else_stop
+
+    safe_clear_folder "$MAUTIC_FOLDER"
+  fi
+else
+  mkdir -p "${MAUTIC_FOLDER}"
+  show_info ${ICON_OK} "Created folder ${MAUTIC_FOLDER}."
+fi
+
 
 show_info ${ICON_INFO} 'Installing Mautic - this will take time (~2 min)...'
 
