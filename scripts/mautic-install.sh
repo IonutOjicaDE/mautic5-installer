@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.7"
+VERSION="0.0.8"
 
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
@@ -71,7 +71,6 @@ function show_info() {
     done
 
     echo -e "${RCol}"
-    answer_yes_else_stop
   else
     if [[ "$seconds" == 0 ]]; then
       tput cuu1 && tput el
