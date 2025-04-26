@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.5"
+VERSION="0.0.6"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -48,9 +48,6 @@ if [ -z "${MAUTIC_COUNT}" ]; then
   systemctl enable mariadb >/dev/null 2>&1 || errors+=("Enable autostart of MariaDB on every reboot (systemctl enable mariadb).")
 
 mysql -u root <<EOF
--- Set root user to use mysql_native_password and define password
-ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY '${MYSQL_ROOT_PASSWORD}';
-
 -- Delete anonymous users
 DELETE FROM mysql.user WHERE User='';
 
@@ -64,7 +61,12 @@ DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 FLUSH PRIVILEGES;
 EOF
   if [[ $? -ne 0 ]]; then
-    errors+=("Setting MariaDB.")
+    errors+=("Optimizing MariaDB.")
+  fi
+
+  echo "ALTER USER 'root'@'localhost' IDENTIFIED VIA 'mysql_native_password';ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root
+  if [[ $? -ne 0 ]]; then
+    errors+=("Change password of root for MariaDB.")
   fi
 
   if [[ ${#errors[@]} -gt 0 ]]; then
