@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.3"
+VERSION="0.0.4"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -20,10 +20,10 @@ chown -R www-data:www-data "${CRON_FOLDER}"
 chown -R www-data:www-data "${BACKUP_FILES_FOLDER}"
 chmod -R 755 "${CRON_FOLDER}"
 chmod -R 755 "${BACKUP_FILES_FOLDER}"
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
 
 
-show_info ${ICON_OK} 'Scheduling crons for web user...'
+show_info ${ICON_INFO} 'Scheduling crons for web user...'
 if [ -z "${MAUTIC_COUNT}" ]; then
   echo "" > crontab_temp
   cron_execution_hour="1"
@@ -51,10 +51,10 @@ show_info ${ICON_INFO} 'Installing cron script for root user...'
 sed -i "s|###CRON_FOLDER###|${CRON_FOLDER}|g" "${INSTALL_FOLDER}other/reset-mautic-permissions.sh"
 mv "${INSTALL_FOLDER}other/reset-mautic-permissions.sh" "${ROOT_FILES_FOLDER}reset-mautic${MAUTIC_COUNT}-permissions.sh"
 chmod a+x "${ROOT_FILES_FOLDER}reset-mautic${MAUTIC_COUNT}-permissions.sh"
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
 
 
-show_info ${ICON_OK} 'Scheduling cron for root user...'
+show_info ${ICON_INFO} 'Scheduling cron for root user...'
 if [ -z "${MAUTIC_COUNT}" ]; then
   echo "" > crontab_temp
 else
@@ -67,12 +67,11 @@ EOF
 echo "${file_content}" >> crontab_temp
 crontab crontab_temp
 rm crontab_temp
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
 
-
-show_info ${ICON_INFO} 'Installing messenger:consume workers...'
 
 for SERVICE in email failed hit; do
+  show_info ${ICON_INFO} "Installing messenger:consume-${SERVICE} worker..."
   sed -i "s|###MAUTIC_FOLDER###|${MAUTIC_FOLDER}|g" "${INSTALL_FOLDER}other/mautic-consume-${SERVICE}@.service"
 
   if [ -z "${MAUTIC_COUNT}" ]; then
@@ -84,7 +83,7 @@ for SERVICE in email failed hit; do
   mv "${INSTALL_FOLDER}other/mautic-consume-${SERVICE}@.service" "/etc/systemd/system/${SERVICE_FILENAME}"
 done
 
-systemctl daemon-reload
+systemctl daemon-reload >/dev/null 2>&1
 
 for SERVICE in email failed hit; do
   if [ -z "${MAUTIC_COUNT}" ]; then
@@ -93,11 +92,11 @@ for SERVICE in email failed hit; do
     SERVICE_NAME="mautic${MAUTIC_COUNT}-consume-${SERVICE}@1"
   fi
 
-  systemctl enable ${SERVICE_NAME}
-  systemctl start ${SERVICE_NAME}
+  systemctl enable ${SERVICE_NAME} >/dev/null 2>&1
+  systemctl start ${SERVICE_NAME} >/dev/null 2>&1
 
   if systemctl is-active --quiet ${SERVICE_NAME}; then
-    show_info ${ICON_OK} " done." 0
+    show_info ${ICON_OK} 'done.' 0
   else
     show_info ${ICON_ERR} "${SERVICE_NAME} is installed but did not start."
   fi
@@ -105,16 +104,17 @@ done
 
 
 show_info ${ICON_INFO} 'Installing sending email rate limiter...'
+mkdir -p "${MAUTIC_FOLDER}config/packages"
 mv "${INSTALL_FOLDER}other/rate_limiter.yaml" "${MAUTIC_FOLDER}config/packages/rate_limiter.yaml"
 mv "${INSTALL_FOLDER}other/messenger.yaml" "${MAUTIC_FOLDER}config/packages/messenger.yaml"
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
 
 
 show_info ${ICON_INFO} 'Clearing cache and setting permissions...'
 
-chown -R www-data:www-data "${MAUTIC_FOLDER}"
-chmod -R 755 "${MAUTIC_FOLDER}"
+chown -R www-data:www-data "${MAUTIC_FOLDER}" >/dev/null 2>&1
+chmod -R 755 "${MAUTIC_FOLDER}" >/dev/null 2>&1
 
-runuser -u www-data -- php "${CRON_FOLDER}cron-clear-cache.php"
+runuser -u www-data -- php "${CRON_FOLDER}cron-clear-cache.php" >/dev/null 2>&1
 
-show_info ${ICON_OK} ' done.'
+show_info ${ICON_OK} 'done.'
