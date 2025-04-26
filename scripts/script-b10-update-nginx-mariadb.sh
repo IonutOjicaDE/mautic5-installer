@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.4"
+VERSION="0.0.5"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -62,7 +62,10 @@ DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 
 FLUSH PRIVILEGES;
-EOF || errors+=("Setting MariaDB.")
+EOF
+  if [[ $? -ne 0 ]]; then
+    errors+=("Setting MariaDB.")
+  fi
 
   if [[ ${#errors[@]} -gt 0 ]]; then
     show_info ${ICON_ERR} "ERROR:"
