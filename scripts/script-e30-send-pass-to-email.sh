@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -22,7 +22,7 @@ and password: ${MAUTIC_ADMIN_PASSWORD}
 Attached you can find the file with all the passwords created during installation.
 
 PS: to use the utility commands.php, use the following link:
-https://${MAUTIC_SUBDOMAIN}/commands/commands.php
+https://${MAUTIC_SUBDOMAIN}/commands.php
 and the password: ${MAUTIC_COMMANDS_PASSWORD}
 
 Have a great day!
