@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.4"
+VERSION="0.0.5"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
@@ -22,7 +22,7 @@ if [ -z "${MAUTIC_COUNT}" ]; then
 
   show_info ${ICON_INFO} "Installing php${PHP_VERSION} and extensions..."
   errors=()
-  EBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,bcmath} >/dev/null 2>&1 || errors+=("Installing php${PHP_VERSION} and extensions.")
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,bcmath} >/dev/null 2>&1 || errors+=("Installing php${PHP_VERSION} and extensions.")
   systemctl enable php${PHP_VERSION}-fpm >/dev/null 2>&1 || errors+=("Enable autostart of php${PHP_VERSION}-fpm on every reboot (systemctl enable php${PHP_VERSION}-fpm).")
   systemctl start php${PHP_VERSION}-fpm >/dev/null 2>&1 || errors+=("Starting php${PHP_VERSION}-fpm now (systemctl start php${PHP_VERSION}-fpm).")
 
