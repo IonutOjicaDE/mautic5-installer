@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################
@@ -29,21 +29,21 @@ echo 'Updated for Mautic V5 on Debian V12 by Ionuţ Ojică - https://ionutojica.
 echo
 echo 'Source created by Matthias Reich - Info@Online-Business-Duplicator.de ( https://online-business-duplicator.de/mautic ).'
 echo
-echo "==========================================================================================================================="
+echo "===================================================================================================="
 echo
-echo "The subdomain where Mautic will be accessible: ${MAUTIC_SUBDOMAIN}"
+echo -e "The subdomain where Mautic will be accessible:${UBlu} ${MAUTIC_SUBDOMAIN} ${RCol}"
 echo
-echo "The email address from which Mautic will send emails: ${SENDER_EMAIL}"
+echo -e "The email address from which Mautic will send emails:${UBlu} ${SENDER_EMAIL} ${RCol}"
 echo
-echo "First and last name of the sender: ${SENDER_FIRSTNAME} ${SENDER_LASTNAME}"
+echo -e "First and last name of the sender:${Cya} ${SENDER_FIRSTNAME} ${SENDER_LASTNAME} ${RCol}"
 echo
-echo "Used time zone: ${SENDER_TIMEZONE}"
+echo -e "Used time zone:${Cya} ${SENDER_TIMEZONE} ${RCol}"
 echo
 if [ ! -z "${MAUTIC_COUNT}" ]; then
-  echo "Mautic installation count on this server: ${MAUTIC_COUNT}"
+  echo -e "Mautic installation count on this server:${Cya} ${MAUTIC_COUNT} ${RCol}"
   echo
 fi
-echo "Administration emails will be sent from: ${FROM_EMAIL} (to $(check_positive "${SEND_PASS_TO_SENDER_EMAIL}" && echo "${SENDER_EMAIL} and to ")${ADMIN_EMAIL})"
+echo -e "Administration email will be sent from:${Cya} ${FROM_EMAIL} ${RCol} (to $(check_positive "${SEND_PASS_TO_SENDER_EMAIL}" && echo "${UBlu}${SENDER_EMAIL}${RCol} and to ")${UBlu}${ADMIN_EMAIL}${RCol}"
 echo
 if [ "${SSL_CERTIFICATE,,}" == "test" ]; then
   echo 'Debug mode enabled: we will use the option --test-cert to obtain a SSL certificate.'
@@ -55,7 +55,7 @@ else
   echo 'No SSL certificate will be pulled.'
   echo
 fi
-echo "==========================================================================================================================="
+echo "===================================================================================================="
 echo
 echo -e "${BRed}I am ready to begin installation. Press ENTER to continue or Ctrl + C to cancel installation..."
 echo -e "${RCol}"
