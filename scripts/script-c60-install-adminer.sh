@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.3"
+VERSION="0.0.4"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -29,4 +29,4 @@ chown -R www-data:www-data "${MAUTIC_FOLDER}"
 chmod -R 755 "${MAUTIC_FOLDER}"
 
 
-show_info ${ICON_OK} ' done.' 0
+show_info ${ICON_OK} 'done.' 0
