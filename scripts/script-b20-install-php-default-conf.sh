@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -9,31 +9,46 @@ show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 if [ -z "${MAUTIC_COUNT}" ]; then
 
-  show_info ${ICON_INFO} 'Install MidnightCommander - orthodox File Explorer...'
+  show_info ${ICON_INFO} 'Installing MidnightCommander - orthodox File Explorer...'
   DEBIAN_FRONTEND=noninteractive apt-get -yq install mc >/dev/null
-  show_info ${ICON_OK} 'done.' 0
+  if [[ $? -ne 0 ]]; then
+    show_info ${ICON_ERR} "Error: Installation of MidnightCommander failed."
+    show_info ${ICON_QUE} "Should the installation continue?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
 
-  show_info ${ICON_INFO} 'Install php...'
-  DEBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,bcmath} >/dev/null
 
-  #Enable autostart of php on every reboot
-  systemctl start php${PHP_VERSION}-fpm >/dev/null
-  #Start php now
-  systemctl enable php${PHP_VERSION}-fpm >/dev/null
-
+  show_info ${ICON_INFO} "Installing php${PHP_VERSION} and extensions..."
+  errors=()
+  EBIAN_FRONTEND=noninteractive apt-get -yq install php${PHP_VERSION} php${PHP_VERSION}-{fpm,mysql,cli,common,opcache,readline,mbstring,xml,gd,curl,imagick,imap,zip,bz2,intl,gmp,bcmath} >/dev/null 2>&1 || errors+=("Installing php${PHP_VERSION} and extensions.")
+  systemctl enable php${PHP_VERSION}-fpm >/dev/null 2>&1 || errors+=("Enable autostart of php${PHP_VERSION}-fpm on every reboot (systemctl enable php${PHP_VERSION}-fpm).")
+  systemctl start php${PHP_VERSION}-fpm >/dev/null 2>&1 || errors+=("Starting php${PHP_VERSION}-fpm now (systemctl start php${PHP_VERSION}-fpm).")
 
   #Ideally the sessions folder should allow web server to create and modify session files.
   #Prevend such Mautic errors:
   #[2024-03-17 20:32:35] mautic.NOTICE: PHP Notice - SessionHandler::gc(): ps_files_cleanup_dir: opendir(/var/lib/php/sessions) failed: Permission denied (13) - in file /var/www/mautic/vendor/symfony/http-foundation/Session/Storage/Handler/StrictSessionHandler.php - at line 106 {"maxlifetime":14400} {"hostname":"m","pid":2243362}
-  sudo chown www-data:www-data /var/lib/php/sessions
-  sudo chmod 700 /var/lib/php/sessions
-  show_info ${ICON_OK} "php${PHP_VERSION} is installed."
+  chown www-data:www-data /var/lib/php/sessions >/dev/null 2>&1 || errors+=("Setting permissions of session files.")
+  chmod 700 /var/lib/php/sessions >/dev/null 2>&1 || errors+=("Setting permissions2 of session files.")
+
+  if [[ ${#errors[@]} -gt 0 ]]; then
+    show_info ${ICON_ERR} "ERROR:"
+    for err in "${errors[@]}"; do
+      show_info ${ICON_NOGO} "$err"
+    done
+
+    show_info ${ICON_QUE} "Should we continue installation?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
 
 
   show_info ${ICON_INFO} 'Adjust configuration of web server Nginx...'
   rm /etc/nginx/sites-enabled/default
 
-file_content="$(cat << EOF
+cat << EOF > "/etc/nginx/conf.d/default.conf"
 server {
   listen 80;
   listen [::]:80;
@@ -67,18 +82,14 @@ server {
   }
 }
 EOF
-)"
-  echo "${file_content}" > /etc/nginx/conf.d/default.conf
   systemctl reload nginx
 
   mkdir -p /etc/systemd/system/nginx.service.d/
-file_content="$(cat << EOF
+cat << EOF > "/etc/systemd/system/nginx.service.d/restart.conf"
 [Service]
 Restart=always
 RestartSec=5s
 EOF
-)"
-  echo "${file_content}" > /etc/systemd/system/nginx.service.d/restart.conf
   systemctl daemon-reload
 
   php_ini_file="/etc/php/${PHP_VERSION}/fpm/php.ini"
@@ -95,31 +106,43 @@ EOF
 
   systemctl restart php${PHP_VERSION}-fpm.service
 
-  show_info ${ICON_OK} 'Configuration of web server Nginx and php finished.'
+  show_info ${ICON_OK} 'done.' 0
 
 
   show_info ${ICON_INFO} 'Install nodejs and npm...'
-
   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - >/dev/null
   # Install nodejs and npm (npm is included in nodejs package for debian)
   DEBIAN_FRONTEND=noninteractive apt-get -yq install nodejs >/dev/null
-
-  show_info ${ICON_OK} 'done.' 0
+  if [[ $? -ne 0 ]]; then
+    show_info ${ICON_ERR} "Error: Installation of nodejs and npm failed."
+    show_info ${ICON_QUE} "Should the installation continue?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
 
 
   show_info ${ICON_INFO} 'Install composer...'
-
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer >/dev/null
-
-  show_info ${ICON_OK} 'done.' 0
+  if [[ $? -ne 0 ]]; then
+    show_info ${ICON_ERR} "Error: Installation of composer failed."
+    show_info ${ICON_QUE} "Should the installation continue?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
 
 
   show_info ${ICON_INFO} 'Install git...'
-
   DEBIAN_FRONTEND=noninteractive apt-get -yq install git >/dev/null
-
-  show_info ${ICON_OK} 'done.' 0
+  if [[ $? -ne 0 ]]; then
+    show_info ${ICON_ERR} "Error: Installation of git failed."
+    show_info ${ICON_QUE} "Should the installation continue?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
 
 else
-  show_info ${ICON_INFO} 'No install or configuration of php or configuration of Nginx'
+  show_info ${ICON_INFO} 'No install or configuration of php or configuration of nginx'
 fi
