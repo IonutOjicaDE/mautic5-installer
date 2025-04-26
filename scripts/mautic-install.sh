@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.3"
+VERSION="0.0.4"
 
 ###############################################################################################
 #####                                INSTALL MAUTIC 5 SCRIPT                              #####
@@ -50,7 +50,6 @@ ICON_NOGO='⛔' # ${ICON_NOGO}
 
 execution_count=0
 LAST_COMMENT=ICON_INFO
-LAST_ICON=""
 
 function show_info() {
   local state="$1"
@@ -61,9 +60,7 @@ function show_info() {
 
   if [[ "$seconds" =~ ^[1-9]$ ]]; then
     execution_count=$((execution_count + 1))
-    echo -e "\n${BCya}${now}  ${state}  ${comment}"
-    echo -e "${now}  ⌛  (${execution_count}) We continue after ${seconds} second$([[ ${seconds} != 1 ]] && echo "s") ..."
-    echo -e "${RCol}"
+    echo -e "\n${BCya}${now}  ${state}  (${execution_count}) ${comment}; waiting for ${seconds} second$([[ ${seconds} != 1 ]] && echo "s") ..."
 
     line=$(printf '%.0s.' {1..100})
     printf "%s\r" "${line}"
@@ -73,16 +70,15 @@ function show_info() {
       sleep "0.0${seconds}"
     done
 
-    echo -e "\n"
+    echo -e "${RCol}"
   else
-    if [[ "$state" == "$ICON_OK" && "$LAST_ICON" == "$ICON_INFO" && "$seconds" == 0 ]]; then
+    if [[ "$seconds" == 0 ]]; then
       tput cuu1 && tput el
-      echo -e "${BCya}${now}  ${ICON_OK}  ${LAST_COMMENT} ${comment}${RCol}"
+      echo -e "${BCya}${now}  ${state}  ${LAST_COMMENT} ${comment}${RCol}"
     else
       echo -e "${BCya}${now}  ${state}  ${comment}${RCol}"
     fi
   fi
-  LAST_ICON="$state"
   LAST_COMMENT="$comment"
 }
 
@@ -144,11 +140,11 @@ show_info ${ICON_OK} 'done.' 0
 
 if [[ -e "${PWD}mautic-installer.zip" ]]; then
   rm "${PWD}mautic-installer.zip"
-  show_info ${ICON_INFO} 'Old scripts archive removed.'
+  show_info ${ICON_OK} 'Old scripts archive removed.'
 fi
 if [[ -d "${INSTALL_FOLDER}" ]]; then
   rm -r "${INSTALL_FOLDER}"
-  show_info ${ICON_INFO} 'Old installation folder removed.'
+  show_info ${ICON_OK} 'Old installation folder removed.'
 fi
 
 show_info ${ICON_INFO} 'Downloading scripts and utilities needed for installation...'
@@ -188,16 +184,16 @@ done
 START_FROM=""
 if [[ "$FORCE_INSTALL" == false && -f "$INSTALL_RESUME_FILE" ]]; then
   START_FROM=$(<"$INSTALL_RESUME_FILE")
-  show_info ${ICON_INFO} "Previous installation failed. Restart from: ${START_FROM}"
+  show_info ${ICON_OK} "Previous installation failed. Restart from: ${START_FROM}"
 
   if [[ -e "${FILE_CONF}" ]]; then
     source "${FILE_CONF}"
-    show_info ${ICON_INFO} "Configuration file ${FILE_CONF} found and loaded."
+    show_info ${ICON_OK} "Configuration file ${FILE_CONF} found and loaded."
   fi
 
   if [[ -e "${FILE_PASS}" ]]; then
     source "${FILE_PASS}"
-    show_info ${ICON_INFO} "Passwords file ${FILE_PASS} found and loaded."
+    show_info ${ICON_OK} "Passwords file ${FILE_PASS} found and loaded."
   fi
 fi
 
@@ -226,7 +222,6 @@ install_script_files=("${sorted[@]}")
 # If we restart, offer an interactive selector
 if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
   START_FROM=$(<"$INSTALL_RESUME_FILE")
-  show_info ${ICON_INFO} "Previous installation failed. Select a script to continue from."
 
   # Find the index of the selected script in the array
   selected_index=0
@@ -269,9 +264,9 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
 
   # Display the menu
   tput sc
-  choice=$(whiptail --title "Continuare instalare" \
+  choice=$(whiptail --title 'Continue installation' \
     --default-item "$selected_index" \
-    --menu "Alege scriptul de la care să continui:" "$menu_height" "$menu_width" "$menu_display_height" \
+    --menu "Choose the script to continue from:" "$menu_height" "$menu_width" "$menu_display_height" \
     "${whiptail_options[@]}" \
     3>&1 1>&2 2>&3)
   tput rc
@@ -280,9 +275,9 @@ if [[ "$FORCE_INSTALL" != true && -f "$INSTALL_RESUME_FILE" ]]; then
   # Check if the user pressed Cancel
   if [[ $? -eq 0 ]]; then
     START_FROM="${install_script_files[$choice]}"
-    show_info ${ICON_INFO} "Ai ales să continui de la: $START_FROM"
+    show_info ${ICON_INFO} "You chose to continue from: $START_FROM"
   else
-    show_info ${ICON_IMP} "Ai anulat instalarea."
+    show_info ${ICON_IMP} 'You canceled the installation.'
     exit 1
   fi
 fi
