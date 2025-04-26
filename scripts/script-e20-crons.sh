@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSION="0.0.4"
-show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
+VERSION="0.0.5"
+show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
 #####                                    Configure Cronjobs                               #####
@@ -13,7 +13,7 @@ mkdir -p "${CRON_FOLDER}"
 mkdir -p "${BACKUP_FILES_FOLDER}"
 
 mv "${INSTALL_FOLDER}crons/"* "${CRON_FOLDER}"
-mv "${TEMP_FOLDER}"* "${CRON_FOLDER}"
+cp -f "${TEMP_FOLDER}"* "${CRON_FOLDER}"
 rm -d "${TEMP_FOLDER}"
 
 chown -R www-data:www-data "${CRON_FOLDER}"
@@ -81,11 +81,9 @@ for SERVICE in email failed hit; do
   fi
 
   mv "${INSTALL_FOLDER}other/mautic-consume-${SERVICE}@.service" "/etc/systemd/system/${SERVICE_FILENAME}"
-done
 
-systemctl daemon-reload >/dev/null 2>&1
+  systemctl daemon-reload >/dev/null 2>&1
 
-for SERVICE in email failed hit; do
   if [ -z "${MAUTIC_COUNT}" ]; then
     SERVICE_NAME="mautic-consume-${SERVICE}@1"
   else
@@ -117,4 +115,4 @@ chmod -R 755 "${MAUTIC_FOLDER}" >/dev/null 2>&1
 
 runuser -u www-data -- php "${CRON_FOLDER}cron-clear-cache.php" >/dev/null 2>&1
 
-show_info ${ICON_OK} 'done.'
+show_info ${ICON_OK} 'done.' 0
