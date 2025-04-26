@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSION="0.0.6"
-show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
+VERSION="0.0.7"
+show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
 #####                               Install nginx, MariaDb                                #####
