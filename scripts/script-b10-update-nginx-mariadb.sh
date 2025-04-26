@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.3"
+VERSION="0.0.4"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
@@ -9,62 +9,73 @@ show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 if [ -z "${MAUTIC_COUNT}" ]; then
 
-  show_info ${ICON_INFO} 'Enable autentification using password for root user'
+  show_info ${ICON_INFO} 'Enable autentification using password for root user...'
   echo "root:${ROOT_USER_PASSWORD}" | chpasswd
   sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
   sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
   systemctl restart sshd
+  show_info ${ICON_OK} 'done.' 0
 
 
-  show_info ${ICON_INFO} 'Time zone of the operating system must remain Etc/UTC'
+  show_info ${ICON_INFO} 'Time zone of the operating system must remain Etc/UTC...'
   timedatectl set-timezone "Etc/UTC"
+  show_info ${ICON_OK} 'done.' 0
+
 
   show_info ${ICON_INFO} 'Installing nginx...'
-  DEBIAN_FRONTEND=noninteractive apt-get -yq install nginx htop >/dev/null
-  # Enable autostart of nginx on every reboot
-  systemctl enable nginx >/dev/null
-  # Start nginx now
-  systemctl start nginx >/dev/null
-  # Assure the correct permissions
-  chown www-data:www-data /usr/share/nginx/html -R
-  show_info ${ICON_OK} 'Nginx is installed.'
+  errors=()
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install nginx htop >/dev/null 2>&1 || errors+=("Installing nginx.")
+  systemctl enable nginx >/dev/null 2>&1 || errors+=("Enable autostart of nginx on every reboot (systemctl enable nginx).")
+  systemctl start nginx >/dev/null 2>&1 || errors+=("Starting nginx now (systemctl start nginx).")
+  chown www-data:www-data /usr/share/nginx/html -R >/dev/null 2>&1 || errors+=("Setting permissions.")
+
+  if [[ ${#errors[@]} -gt 0 ]]; then
+    show_info ${ICON_ERR} "ERROR:"
+    for err in "${errors[@]}"; do
+      show_info ${ICON_NOGO} "$err"
+    done
+
+    show_info ${ICON_QUE} "Should we continue installation?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
 
 
   show_info ${ICON_INFO} 'Installing MariaDB...'
-  DEBIAN_FRONTEND=noninteractive apt-get -yq install mariadb-server mariadb-client >/dev/null
-  # Enable autostart of MariaDB on every reboot
-  systemctl enable mariadb >/dev/null
+  errors=()
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install mariadb-server mariadb-client >/dev/null 2>&1 || errors+=("Installing MariaDB.")
+  systemctl enable mariadb >/dev/null 2>&1 || errors+=("Enable autostart of MariaDB on every reboot (systemctl enable mariadb).")
 
 mysql -u root <<EOF
--- Setează parola root (doar dacă e instalare proaspătă)
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
+-- Set root user to use mysql_native_password and define password
+ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY '${MYSQL_ROOT_PASSWORD}';
 
--- Șterge utilizatorii anonimi
+-- Delete anonymous users
 DELETE FROM mysql.user WHERE User='';
 
--- Dezactivează loginul remote pentru root
+-- Disable remote login for root
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 
--- Șterge baza de date "test"
+-- Delete database "test"
 DROP DATABASE IF EXISTS test;
 DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 
--- Reîncarcă privilegii
 FLUSH PRIVILEGES;
-EOF
+EOF || errors+=("Setting MariaDB.")
 
-#mysql_secure_installation <<EOF
-#y
-#${MYSQL_ROOT_PASSWORD}
-#${MYSQL_ROOT_PASSWORD}
-#y
-#y
-#y
-#y
-#y
-#EOF
+  if [[ ${#errors[@]} -gt 0 ]]; then
+    show_info ${ICON_ERR} "ERROR:"
+    for err in "${errors[@]}"; do
+      show_info ${ICON_NOGO} "$err"
+    done
 
-  show_info ${ICON_OK} 'MariaDB is installed.'
+    show_info ${ICON_QUE} "Should we continue installation?"
+    answer_yes_else_stop
+  else
+    show_info ${ICON_OK} 'done.' 0
+  fi
+
 
 else
 
