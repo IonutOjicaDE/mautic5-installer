@@ -1,16 +1,12 @@
 #!/bin/bash
-VERSION="0.0.2"
+VERSION="0.0.3"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}." 1
 
 ###############################################################################################
 #####                                    Create database                                  #####
 ###############################################################################################
 
-if [ -z "$MAUTIC_COUNT" ]; then
-  show_info ${ICON_INFO} 'Change authentification to MySQL of root user from localhost to mysql_native_password...'
-  #Schimbă parola utilizatorului root
-  echo "ALTER USER 'root'@'localhost' IDENTIFIED VIA 'mysql_native_password';ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root
-else
+if [ -n "$MAUTIC_COUNT" ]; then
   # Check current authentication method for root user
   auth_plugin=$(echo "SELECT plugin FROM mysql.user WHERE User = 'root' AND Host = 'localhost';" | mysql -u root -p${MYSQL_ROOT_PASSWORD} -N)
   if [ "$auth_plugin" == "mysql_native_password" ]; then
@@ -47,4 +43,4 @@ if [[ "$USER_EXISTS" != 1 ]]; then
   answer_yes_else_stop
 fi
 
-show_info ${ICON_OK} 'Mautic database and user created.'
+show_info ${ICON_OK} 'done.' 0
