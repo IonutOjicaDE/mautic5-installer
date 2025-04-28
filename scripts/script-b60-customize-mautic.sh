@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.4"
+VERSION="0.0.5"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
@@ -65,7 +65,8 @@ UPDATE lead_fields SET is_published = 0 WHERE alias IN (
   'company', 'phone', 'address2', 'companyaddress1', 'companyaddress2',
   'companyemail', 'companyphone', 'companycity', 'companystate',
   'companyzipcode', 'companycountry', 'companyname', 'companywebsite',
-  'companynumber_of_employees', 'companyannual_revenue', 'companyindustry', 'companydescription');
+  'companynumber_of_employees', 'companyannual_revenue', 'companyindustry', 
+  'companydescription', 'position');
 
 UPDATE lead_fields SET field_order = 10 WHERE alias = 'website';
 UPDATE lead_fields SET field_order = 23 WHERE alias = 'companyname';
