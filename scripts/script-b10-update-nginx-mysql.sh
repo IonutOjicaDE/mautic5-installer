@@ -1,9 +1,9 @@
 #!/bin/bash
-VERSION="0.0.7"
+VERSION="0.0.8"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
-#####                               Install nginx, MariaDb                                #####
+#####                               Install nginx, MySQL                                #####
 ###############################################################################################
 
 
@@ -42,10 +42,10 @@ if [ -z "${MAUTIC_COUNT}" ]; then
   fi
 
 
-  show_info ${ICON_INFO} 'Installing MariaDB...'
+  show_info ${ICON_INFO} 'Installing MySQL...'
   errors=()
-  DEBIAN_FRONTEND=noninteractive apt-get -yq install mariadb-server mariadb-client >/dev/null 2>&1 || errors+=("Installing MariaDB.")
-  systemctl enable mariadb >/dev/null 2>&1 || errors+=("Enable autostart of MariaDB on every reboot (systemctl enable mariadb).")
+  DEBIAN_FRONTEND=noninteractive apt-get -yq install mysql-server mysql-client >/dev/null 2>&1 || errors+=("Installing MySQL.")
+  systemctl enable mysql >/dev/null 2>&1 || errors+=("Enable autostart of MySQL on every reboot (systemctl enable mysql).")
 
 mysql -u root <<EOF
 -- Delete anonymous users
@@ -61,12 +61,12 @@ DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
 FLUSH PRIVILEGES;
 EOF
   if [[ $? -ne 0 ]]; then
-    errors+=("Optimizing MariaDB.")
+    errors+=("Optimizing MySQL.")
   fi
 
   echo "ALTER USER 'root'@'localhost' IDENTIFIED VIA 'mysql_native_password';ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root
   if [[ $? -ne 0 ]]; then
-    errors+=("Change password of root for MariaDB.")
+    errors+=("Change password of root for MySQL.")
   fi
 
   if [[ ${#errors[@]} -gt 0 ]]; then
@@ -84,16 +84,16 @@ EOF
 
 else
 
-  if dpkg -l | grep -qw nginx; then
+  if dpkg -s nginx >/dev/null 2>&1; then
     show_info ${ICON_OK} 'Nginx is already installed.'
   else
     show_info ${ICON_NOGO} "Error: Nginx should already be installed, when installing ${MAUTIC_COUNT} instance of Mautic !"
     exit 1
   fi
-  if dpkg -l | grep -qw mariadb; then
-    show_info ${ICON_OK} 'MariaDB is already installed.'
+  if dpkg -s mysql-server >/dev/null 2>&1; then
+    show_info ${ICON_OK} 'MySQL is already installed.'
   else
-    show_info ${ICON_NOGO} "Error: MariaDB should already be installed, when installing ${MAUTIC_COUNT} instance of Mautic !"
+    show_info ${ICON_NOGO} "Error: MySQL should already be installed, when installing ${MAUTIC_COUNT} instance of Mautic !"
     exit 1
   fi
 
