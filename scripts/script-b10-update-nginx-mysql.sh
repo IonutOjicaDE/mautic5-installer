@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.8"
+VERSION="0.0.9"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
@@ -42,9 +42,53 @@ if [ -z "${MAUTIC_COUNT}" ]; then
   fi
 
 
-  show_info ${ICON_INFO} 'Installing MySQL...'
+  show_info ${ICON_OK} 'Installing MySQL:'
+
+show_info ${ICON_INFO} 'Download and add the GPG key for the official MySQL repository...'
+output=$(wget -O mysql-apt-config.deb https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb 2>&1)
+if [[ $? -ne 0 ]]; then
+  show_info ${ICON_ERR} 'ERROR downloading mysql-apt-config:' 0
+  echo "$output"
+  show_info ${ICON_QUE} "Do you want to continue?"
+  answer_yes_else_stop && continue
+fi
+show_info ${ICON_OK} 'done.' 0
+
+show_info ${ICON_INFO} 'Preconfiguring mysql-apt-config to use MySQL 8.0...'
+echo "mysql-apt-config mysql-apt-config/select-server select mysql-8.0" | debconf-set-selections
+
+output=$(DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config.deb 2>&1)
+if [[ $? -ne 0 ]]; then
+  show_info ${ICON_ERR} 'ERROR installing mysql-apt-config:' 0
+  echo "$output"
+  show_info ${ICON_QUE} "Do you want to continue?"
+  answer_yes_else_stop && continue
+fi
+show_info ${ICON_OK} 'done.' 0
+
+show_info ${ICON_INFO} 'Updating package list after adding MySQL repository...'
+output=$(DEBIAN_FRONTEND=noninteractive apt-get -yq update 2>&1)
+if [[ $? -ne 0 ]]; then
+  show_info ${ICON_ERR} 'ERROR updating apt package list:' 0
+  echo "$output"
+  show_info ${ICON_QUE} "Do you want to continue?"
+  answer_yes_else_stop && continue
+fi
+show_info ${ICON_OK} 'done.' 0
+
+show_info ${ICON_INFO} 'Installing MySQL 8.0 server and client...'
+output=$(DEBIAN_FRONTEND=noninteractive apt-get install -yq mysql-server mysql-client 2>&1)
+if [[ $? -ne 0 ]]; then
+  show_info ${ICON_ERR} 'ERROR installing MySQL:' 0
+  echo "$output"
+  show_info ${ICON_QUE} "Do you want to continue?"
+  answer_yes_else_stop && continue
+fi
+show_info ${ICON_OK} 'done.' 0
+
+rm -f mysql-apt-config.deb
+
   errors=()
-  DEBIAN_FRONTEND=noninteractive apt-get -yq install mysql-server mysql-client >/dev/null 2>&1 || errors+=("Installing MySQL.")
   systemctl enable mysql >/dev/null 2>&1 || errors+=("Enable autostart of MySQL on every reboot (systemctl enable mysql).")
 
 mysql -u root <<EOF
