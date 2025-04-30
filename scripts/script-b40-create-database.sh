@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.4"
+VERSION="0.0.5"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
@@ -25,7 +25,8 @@ show_info ${ICON_INFO} "Create database mautic${MAUTIC_COUNT} and user mauticuse
 #with the password "MYSQL_MAUTICUSER_PASSWORD"
 mysql -u root -p"${MYSQL_ROOT_PASSWORD}" <<EOF
 CREATE DATABASE mautic${MAUTIC_COUNT} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED BY '${MYSQL_MAUTICUSER_PASSWORD}';
+CREATE USER 'mauticuser${MAUTIC_COUNT}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_MAUTICUSER_PASSWORD}';
+GRANT ALL ON mautic${MAUTIC_COUNT}.* TO 'mauticuser${MAUTIC_COUNT}'@'localhost';
 FLUSH PRIVILEGES;
 EOF
 
