@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="0.0.9"
+VERSION="0.0.10"
 show_info ${ICON_INFO} "Start executing ${install_script_file} V${VERSION}" 1
 
 ###############################################################################################
@@ -108,7 +108,7 @@ EOF
     errors+=("Optimizing MySQL.")
   fi
 
-  echo "ALTER USER 'root'@'localhost' IDENTIFIED VIA 'mysql_native_password';ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';FLUSH PRIVILEGES;" | mysql -u root
+  echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}'; FLUSH PRIVILEGES;" | mysql -u root
   if [[ $? -ne 0 ]]; then
     errors+=("Change password of root for MySQL.")
   fi
