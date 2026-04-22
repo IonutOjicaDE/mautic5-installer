@@ -262,3 +262,5 @@ Also all the contact fields inside Mautic are renamed in Romanian language.
 🍓☕ If my work has been useful to you, do not hesitate to offer me a strawberry milk 😃
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ionutojica)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=3RJN8T44J4M8C)
